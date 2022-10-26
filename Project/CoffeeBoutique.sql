@@ -1,5 +1,5 @@
 --- TEAM NAME: CARPE DATA
---- TEAM MEMBERS: CLARK, DARMA,DANIEL
+--- TEAM MEMBERS: CLARK, DHARMA, DANIEL
 
 ---CREATE SCHEMA
 DROP SCHEMA IF EXISTS COFFEE_BOUTIQUE CASCADE ;
@@ -26,9 +26,9 @@ CREATE DOMAIN COFFEE_BOUTIQUE.type_store AS VARCHAR(7)
 CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.STORE(
     store_ID integer,
     name varchar(50) UNIQUE NOT NULL,
-    store_type COFFEE_BOUTIQUE.type_store,
-    gps_Long float,
-    gps_Lat float,
+    store_type COFFEE_BOUTIQUE.type_store NOT NULL,
+    gps_Long float NOT NULL,
+    gps_Lat float NOT NULL,
 
     CONSTRAINT PK_STORE PRIMARY KEY(store_ID)
     );
@@ -36,14 +36,17 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.STORE(
 
 CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.COFFEE(
     coffee_ID integer,
-    name varchar(50),
+    name varchar(50) NOT NULL,
     description varchar(250),
     country_of_origin varchar(60),
-    intensity integer
+    intensity integer NOT NULL
         CHECK ( intensity >= 1 AND intensity <= 12 ),
-    price float,
-    reward_points float,
-    redeem_points float,
+    price float NOT NULL
+        CHECK ( price >= 0 ),
+    reward_points float NOT NULL DEFAULT 0
+        CHECK ( reward_points >= 0 ),
+    redeem_points float NOT NULL DEFAULT 0
+        CHECK ( redeem_points >= 0 ),
 
     CONSTRAINT PK_COFFEE PRIMARY KEY(coffee_ID)
 
@@ -59,13 +62,14 @@ CREATE DOMAIN COFFEE_BOUTIQUE.months AS varchar(3)
 
 CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.CUSTOMER(
     customer_ID integer,
-    first varchar(50),
+    first varchar(50) NOT NULL,
     last varchar(50),
     middle_initial char(1),
     day_of_birth char(2),
     month_of_birth COFFEE_BOUTIQUE.months,
     loyalty_level COFFEE_BOUTIQUE.level,
-    points_earned float,
+    points_earned float NOT NULL DEFAULT 0
+        CHECK ( points_earned >= 0 ),
 
     CONSTRAINT PK_CUSTOMER PRIMARY KEY(customer_ID)
 
@@ -78,9 +82,9 @@ CREATE DOMAIN COFFEE_BOUTIQUE.phone_enum AS varchar(6)
 CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.PHONE(
     customer_ID integer,
     phone_number varchar(16),
-    phone_type COFFEE_BOUTIQUE.phone_enum,
+    phone_type COFFEE_BOUTIQUE.phone_enum NOT NULL,
 
-    CONSTRAINT PK_PHONE PRIMARY KEY (customer_ID),
+    CONSTRAINT PK_PHONE PRIMARY KEY (customer_ID, phone_number),
 
     FOREIGN KEY (customer_ID) REFERENCES COFFEE_BOUTIQUE.CUSTOMER (customer_ID)
         ON UPDATE CASCADE ON DELETE CASCADE
@@ -103,10 +107,11 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.SALE(
     customer_ID integer,
     store_ID integer,
     coffee_ID integer,
-    quantity integer,
-    purchase_time time,
-    purchase_portion float,
-    redeem_portion float,
+    quantity integer NOT NULL DEFAULT 1
+        CHECK ( quantity >= 1 ),
+    purchase_time time NOT NULL,
+    purchase_portion float NOT NULL,
+    redeem_portion float NOT NULL DEFAULT 0,
 
     CONSTRAINT PK_SALE PRIMARY KEY (sale_ID),
 
@@ -124,16 +129,16 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.SALE(
 
 
 --- Use a trigger here for checking multiple tables
-INSERT INTO COFFEE_BOUTIQUE.SALE VALUES (1, 1, 1, 1, 1, '13:30', 7.30, 0);
+---INSERT INTO COFFEE_BOUTIQUE.SALE VALUES (1, 1, 1, 1, 1, '13:30', 7.30, 0);
 
 
 --- This constraint will make it so that the end_date cannot be before the start date...
 --- For obvious reasons
 CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.PROMOTION(
     promotion_ID integer,
-    name varchar(50),
-    start_date date,
-    end_date date
+    name varchar(50) NOT NULL,
+    start_date date NOT NULL,
+    end_date date NOT NULL
         CHECK ( PROMOTION.end_date >= PROMOTION.start_date ),
 
     CONSTRAINT PK_PROMOTION PRIMARY KEY (promotion_ID)
