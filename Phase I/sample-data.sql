@@ -13,26 +13,26 @@ INSERT INTO COFFEE_BOUTIQUE.STORE VALUES (2, 'Coffee_store#2', 'kiosk', 010.999,
 INSERT INTO COFFEE_BOUTIQUE.STORE VALUES (3, 'Coffee_store#3', 'sitting', 135.789, 246.789);
 
 -------------------20 Customers-------------------
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (1, 'Abraham', 'Arden', 'S', '5', 'MAR', NULL, 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (2, 'Garnett', 'Douglas', 'J', '10', 'OCT', 'basic', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (3, 'Foster', 'Russel', 'T', '18', 'JAN', 'bronze', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (4, 'Lorne', 'Roscoe', 'T', '8', 'SEP', 'silver', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (5, 'Emery', 'Meredith', 'S', '7', 'APR', 'gold', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (6, 'Neville', 'Cordell', 'P', '3', 'APR', 'platinum', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (7, 'Clarence', 'Marion', 'R', '5', 'MAY', 'diamond', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (8, 'Damian', 'Mortimer', 'B', '4', 'JUN', NULL, 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (9, 'Ellis', 'Monroe', 'B', '1', 'OCT', 'basic', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (10, 'Wilfrid', 'Jeremiah', 'W', '10', 'JUL', 'bronze', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (11, 'Jerold', 'Randolf', 'M', '19', 'DEC', 'silver', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (12, 'Elroy', 'Edgar', 'C', '24', 'MAR', 'gold', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (13, 'Alexander', 'Warren', 'S', '2', 'SEP', 'platinum', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (14, 'Cavan', 'Foster', 'B', '2', 'DEC', 'diamond', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (15, 'Brandt', 'Sunny', 'E', '7', 'AUG', NULL, 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (16, 'Zach', 'Leslie', 'B', '6', 'NOV', 'basic', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (17, 'Lindsay', 'Adrian', 'F', '13', 'FEB', 'bronze', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (18, 'Elton', 'Emmett', 'B', '19', 'FEB', 'silver', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (19, 'Bryon', 'Garnet', 'W', '15', 'NOV', 'gold', 0);
-INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (20, 'Ford', 'Phillip', 'A', '13', 'AUG', 'platinum', 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (1, 'Abraham', 'Arden', 'S', '5', 'MAR', '7624244937' ,'mobile' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (2, 'Garnett', 'Douglas', 'J', '10', 'OCT', '7917796026' ,'home' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (3, 'Foster', 'Russel', 'T', '18', 'JAN', '7809572136','work' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (4, 'Lorne', 'Roscoe', 'T', '8', 'SEP', '1804299101' ,'mobile' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (5, 'Emery', 'Meredith', 'S', '7', 'APR', '7272235975' ,'home' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (6, 'Neville', 'Cordell', 'P', '3', 'APR', '5685916762' ,'work' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (7, 'Clarence', 'Marion', 'R', '5', 'MAY', '3607124246' , 'other', 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (8, 'Damian', 'Mortimer', 'B', '4', 'JUN', '4139241499' ,'mobile' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (9, 'Ellis', 'Monroe', 'B', '1', 'OCT', '1818151108' ,'mobile' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (10, 'Wilfrid', 'Jeremiah', 'W', '10', 'JUL','2096352347' , 'mobile', 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (11, 'Jerold', 'Randolf', 'M', '19', 'DEC', '7276414045' ,'work' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (12, 'Elroy', 'Edgar', 'C', '24', 'MAR','6154143341' ,'home' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (13, 'Alexander', 'Warren', 'S', '2', 'SEP','2262515106','mobile' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (14, 'Cavan', 'Foster', 'B', '2', 'DEC', '2256168614', 'home', 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (15, 'Brandt', 'Sunny', 'E', '7', 'AUG','4525933738' ,'work' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (16, 'Zach', 'Leslie', 'B', '6', 'NOV', '7016289514' ,'other' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (17, 'Lindsay', 'Adrian', 'F', '13', 'FEB', '1982016789' , 'work', 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (18, 'Elton', 'Emmett', 'B', '19', 'FEB', '6242266339','home' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (19, 'Bryon', 'Garnet', 'W', '15', 'NOV','1859613893' ,'mobile' , 0);
+INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (20, 'Ford', 'Phillip', 'A', '13', 'AUG', '5449106245', 'work',0);
 
 -------------------12 COFFEES-------------------
 INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (1, 'Caffe Latte', 'Basic Coffee', 'Canada', 1, 2.95, 29.5, 88.5);
