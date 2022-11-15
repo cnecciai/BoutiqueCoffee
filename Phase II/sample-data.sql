@@ -56,8 +56,7 @@ INSERT INTO COFFEE_BOUTIQUE.PROMOTION VALUES (3, 'Winter Extravaganza', '11-15-2
 
 -------------------50 SALES-------------------
 
-INSERT INTO COFFEE_BOUTIQUE.SALE VALUES (1, 1, 1, 1, 2, '10:15', 5.90, 0); /* Can adjust this price as
-                                                                              long as it adds up to 2.95*/
+INSERT INTO COFFEE_BOUTIQUE.SALE VALUES (1, 1, 1, 1, 2, '10:15', 5.90, 0);
 INSERT INTO COFFEE_BOUTIQUE.SALE VALUES (2, 2, 2, 2, 1, '08:23', 3.65, 0);
 INSERT INTO COFFEE_BOUTIQUE.SALE VALUES (3, 3, 3, 3, 2, '16:24', 8.30, 0);
 INSERT INTO COFFEE_BOUTIQUE.SALE VALUES (4, 4, 1, 4, 3, '12:35', 13.95, 0);

@@ -1,7 +1,8 @@
 
 /*
-   javac -cp "postgresql-42.5.0.jar;." DriverCB.java
-   java -cp "postgresql-42.5.0.jar;." DriverCB
+cd C:\Users\clark\OneDrive\Desktop\CS1555\BoutiqueCoffee\Phase II
+javac -cp "postgresql-42.5.0.jar;." DriverCB.java
+java -cp "postgresql-42.5.0.jar;." DriverCB
 */
 import java.util.Scanner;
 import java.util.Properties;
@@ -28,7 +29,7 @@ public static void main(String[] args) throws
     task_selected = input_task_selection(scan);
     input_check(task_selected);
     switch(task_selected) {
-      case 1:  task_1(); break;
+      case 1:  task_1(conn); break;
       case 2:  task_2(); break;
       case 3:  task_3(); break;
       case 4:  task_4(); break;
@@ -52,7 +53,18 @@ public static void main(String[] args) throws
   //Query Methods ---------------------
   //-----------------------------------
   //Task #1
-  public static void task_1() {
+  public static void task_1(Connection conn) throws
+          SQLException, ClassNotFoundException {
+
+    Statement st = conn.createStatement();
+    String query1 =
+            "SELECT first FROM COFFEE_BOUTIQUE.CUSTOMER";
+    ResultSet res1 = st.executeQuery(query1);
+    String first_name;
+    while (res1.next()) {
+        first_name = res1.getString("first");
+        System.out.println(first_name);
+    }
 
   };
   //Task #2

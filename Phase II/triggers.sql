@@ -1,4 +1,4 @@
-/* CLARK
+/*
   When a 'SALE' transaction occurs, ensure that the customer has paid
   the correct amount for that coffee type * quantity */
   CREATE OR REPLACE FUNCTION correct_amount_check()
@@ -12,7 +12,7 @@ RETURNS TRIGGER AS $$
         WHERE NEW.coffee_ID = C.coffee_id;
 
         total_purchase_amount = NEW.quantity * total_purchase_amount;
-        customer_paid = (NEW.purchase_portion + NEW.redeem_portion);
+        customer_paid = (NEW.purchase_portion * 100 + NEW.redeem_portion) / 100;
 
         IF total_purchase_amount = customer_paid THEN
             RETURN NEW;
@@ -34,7 +34,7 @@ CREATE TRIGGER sale_amount_trigger
 CREATE OR REPLACE FUNCTION loyalty_relation_assign()
 RETURNS TRIGGER AS $$
     BEGIN
-        INSERT INTO COFFEE_BOUTIQUE.LOYALTY_PROGRAM VALUES (NEW.CUSTOMER_ID, 'basic', 1);
+        INSERT INTO COFFEE_BOUTIQUE.loyalty_program VALUES (NEW.CUSTOMER_ID);
         RETURN NEW;
     END;
     $$ language PLPGSQL;
@@ -65,17 +65,16 @@ RETURNS TRIGGER AS $$
         amount_trying_to_redeem = NEW.REDEEM_PORTION;
 
         SELECT points_earned into amount_redeemable
-        FROM COFFEE_BOUTIQUE.CUSTOMER
-        WHERE customer_id = NEW.CUSTOMER_ID;
+        FROM COFFEE_BOUTIQUE.CUSTOMER AS C
+        WHERE C.customer_id = NEW.CUSTOMER_ID;
 
         IF amount_trying_to_redeem > amount_redeemable THEN
             RAISE EXCEPTION 'NOT ENOUGH POINTS';
         end if;
 
-        subtract_points = amount_redeemable - amount_trying_to_redeem;
-
         UPDATE COFFEE_BOUTIQUE.CUSTOMER
-        SET points_earned = points_earned - subtract_points;
+        SET points_earned = amount_redeemable - amount_trying_to_redeem
+        WHERE customer_id = NEW.CUSTOMER_ID;
         RETURN NEW;
     END;
     $$ language PLPGSQL;
@@ -116,8 +115,9 @@ RETURNS TRIGGER AS $$
     END;
     $$ language PLPGSQL;
 
-DROP TRIGGER IF EXISTS loyalty_assign ON COFFEE_BOUTIQUE.CUSTOMER;
-CREATE TRIGGER loyalty_assign
+DROP TRIGGER IF EXISTS add_redeem_points ON COFFEE_BOUTIQUE.CUSTOMER;
+CREATE TRIGGER add_redeem_points
     AFTER INSERT ON COFFEE_BOUTIQUE.SALE
     FOR EACH ROW
+    WHEN ( NEW.redeem_portion = 0 )
     EXECUTE FUNCTION add_points();

@@ -1,7 +1,6 @@
 --- TEAM NAME: CARPE DATA
 --- TEAM MEMBERS: CLARK, DHARMA, DANIEL
 --- Phase #1
-
 ---CREATE SCHEMA
 DROP SCHEMA IF EXISTS COFFEE_BOUTIQUE CASCADE ;
 CREATE SCHEMA IF NOT EXISTS COFFEE_BOUTIQUE;
@@ -105,7 +104,7 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.SALE(
         CHECK ( quantity >= 1 ),
     purchase_time time NOT NULL,
     purchase_portion float NOT NULL,
-    redeem_portion float NOT NULL DEFAULT 0,
+    redeem_portion float NOT NULL DEFAULT 0, --- make note that this is points (cents) off the total purchase
 
     CONSTRAINT PK_SALE PRIMARY KEY (sale_ID),
 
