@@ -30,21 +30,21 @@ public static void main(String[] args) throws
     input_check(task_selected);
     switch(task_selected) {
       case 1:  task_1(conn); break;
-      case 2:  task_2(); break;
-      case 3:  task_3(); break;
-      case 4:  task_4(); break;
-      case 5:  task_5(); break;
-      case 6:  task_6(); break;
-      case 7:  task_7(); break;
-      case 8:  task_8(); break;
-      case 9:  task_9(); break;
-      case 10: task_10(); break;
-      case 11: task_11(); break;
-      case 12: task_12(); break;
-      case 13: task_13(); break;
-      case 14: task_14(); break;
-      case 15: task_15(); break;
-      case 16: task_16(); break;
+      case 2:  task_2(conn); break;
+      case 3:  task_3(conn); break;
+      case 4:  task_4(conn); break;
+      case 5:  task_5(conn); break;
+      case 6:  task_6(conn); break;
+      case 7:  task_7(conn); break;
+      case 8:  task_8(conn); break;
+      case 9:  task_9(conn); break;
+      case 10: task_10(conn); break;
+      case 11: task_11(conn); break;
+      case 12: task_12(conn); break;
+      case 13: task_13(conn); break;
+      case 14: task_14(conn); break;
+      case 15: task_15(conn); break;
+      case 16: task_16(conn); break;
       }
     }
   } //End Main
@@ -53,78 +53,112 @@ public static void main(String[] args) throws
   //Query Methods ---------------------
   //-----------------------------------
   //Task #1
-  public static void task_1(Connection conn) throws
-          SQLException, ClassNotFoundException {
-
-    Statement st = conn.createStatement();
-    String query1 =
-            "SELECT first FROM COFFEE_BOUTIQUE.CUSTOMER";
-    ResultSet res1 = st.executeQuery(query1);
-    String first_name;
-    while (res1.next()) {
-        first_name = res1.getString("first");
-        System.out.println(first_name);
-    }
+  public static void task_1(Connection conn) {
 
   };
   //Task #2
-  public static void task_2() {
+  public static void task_2(Connection conn) {
 
   };
   //Task #3
-  public static void task_3() {
+  public static void task_3(Connection conn) throws
+          SQLException, ClassNotFoundException {
 
+    Scanner scan = new Scanner(System.in);
+
+    System.out.println("\n----Scheduling a Promotion----\n");
+    System.out.print("New Promotion Name: ");
+    String promotion_name = scan.nextLine();
+    System.out.print("Promotion Start Date - Format(MM-DD-YYYY): ");
+    String start_date = scan.nextLine();
+    System.out.print("Promotion End Date - Format(MM-DD-YYYY): ");
+    String end_date = scan.nextLine();
+    System.out.print("Coffee ID: ");
+    String coffee_id = scan.nextLine();
+
+
+    //RETRIEVE THE MAXIMUM ID FROM THE PROMOTIONS TABLE, +1, THEN ASSIGN THAT TO THE NEW ID
+    Statement st = conn.createStatement();
+    String query1 = "SELECT MAX(promotion_ID) + 1 AS ID FROM COFFEE_BOUTIQUE.PROMOTION";
+    ResultSet res1 = st.executeQuery(query1);
+    String promotion_ID = "";
+    while (res1.next()) {
+        promotion_ID = res1.getString("ID");
+    }
+    System.out.println("---------------------------------------------");
+    PreparedStatement prep_statement = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.PROMOTION VALUES (?,?,?,?)");
+    prep_statement.setString(1, promotion_ID);
+    prep_statement.setString(2, promotion_name);
+    prep_statement.setString(3, start_date);
+    prep_statement.setString(4, end_date);
+    PreparedStatement prep_statement2 = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.PROMOTES VALUES (?,?)");
+    prep_statement2.setString(1, promotion_ID);
+    prep_statement2.setString(2, coffee_id);
+    try {
+        conn.setAutoCommit(false);
+        st.executeUpdate(prep_statement.toString());
+        st.executeUpdate(prep_statement2.toString());
+        conn.commit();
+        System.out.println("ADDED TO DATABASE SUCCESSFULLY - PROMOTION_ID: " + promotion_ID);
+      }
+        catch (SQLException e1) {
+          try {
+            System.out.println("ERROR: PROMOTION NOT ADDED TO DATABASE");
+            conn.rollback();
+          }
+          catch(SQLException e2) { System.out.println(e2.toString()); }
+        }
   };
   //Task #4
-  public static void task_4() {
+  public static void task_4(Connection conn) {
 
   };
   //Task #5
-  public static void task_5() {
+  public static void task_5(Connection conn) {
 
   };
   //Task #6
-  public static void task_6() {
+  public static void task_6(Connection conn) {
 
   };
   //Task #7
-  public static void task_7() {
+  public static void task_7(Connection conn) {
 
   };
   //Task #8
-  public static void task_8() {
+  public static void task_8(Connection conn) {
 
   };
   //Task #9
-  public static void task_9() {
+  public static void task_9(Connection conn) {
 
   };
   //Task #10
-  public static void task_10() {
+  public static void task_10(Connection conn) {
 
   };
   //Task #11
-  public static void task_11() {
+  public static void task_11(Connection conn) {
 
   };
   //Task #12
-  public static void task_12() {
+  public static void task_12(Connection conn) {
 
   };
   //Task #13
-  public static void task_13() {
+  public static void task_13(Connection conn) {
 
   };
   //Task #14
-  public static void task_14() {
+  public static void task_14(Connection conn) {
 
   };
   //Task #15
-  public static void task_15() {
+  public static void task_15(Connection conn) {
 
   };
   //Task #16
-  public static void task_16() {
+  public static void task_16(Connection conn) {
 
   };
   //-----------------------------------
