@@ -76,8 +76,6 @@ public static void main(String[] args) throws
     System.out.print("Coffee ID: ");
     String coffee_id = scan.nextLine();
 
-
-    //RETRIEVE THE MAXIMUM ID FROM THE PROMOTIONS TABLE, +1, THEN ASSIGN THAT TO THE NEW ID
     Statement st = conn.createStatement();
     String query1 = "SELECT MAX(promotion_ID) + 1 AS ID FROM COFFEE_BOUTIQUE.PROMOTION";
     ResultSet res1 = st.executeQuery(query1);
@@ -128,12 +126,10 @@ public static void main(String[] args) throws
 
       String store = "";
       String coffee = "";
-
       String rpromotion_ID = "";
       String rstore_ID = "";
       String rcoffee = "";
       String rpromotion_name = "";
-
       ResultSet res1;
 
       Scanner scan = new Scanner(System.in);
@@ -175,7 +171,7 @@ public static void main(String[] args) throws
         System.out.print("Enter Coffee ID: ");
         coffee = scan.nextLine();
         Statement st = conn.createStatement();
-        PreparedStatement prep_statement = conn.prepareStatement(" SELECT * FROM COFFEE_BOUTIQUE.PROMOTES  JOIN COFFEE_BOUTIQUE.CARRIES USING(promotion_ID) JOIN COFFEE_BOUTIQUE.PROMOTION USING(promotion_ID) WHERE store_ID = ? and coffee_id = ? ");
+        PreparedStatement prep_statement = conn.prepareStatement(" SELECT * FROM COFFEE_BOUTIQUE.PROMOTES JOIN COFFEE_BOUTIQUE.CARRIES USING(promotion_ID) JOIN COFFEE_BOUTIQUE.PROMOTION USING(promotion_ID) WHERE store_ID = ? and coffee_id = ? ");
         prep_statement.setString(1, store);
         prep_statement.setString(2, coffee);
         try {
@@ -217,6 +213,65 @@ public static void main(String[] args) throws
   public static void task_9(Connection conn) throws
           SQLException, ClassNotFoundException {
 
+            Scanner scan = new Scanner(System.in);
+            System.out.println("\n----Add a new Customer----\n");
+            System.out.print("First Name of Customer: ");
+            String first_name = scan.nextLine();
+            System.out.print("Last Name of Customer: ");
+            String last_name = scan.nextLine();
+            System.out.print("Middle Initial: ");
+            String middle_inital = scan.nextLine();
+            System.out.print("Day of Birth(Numerical Format - DD): ");
+            String day_of_birth = scan.nextLine();
+            System.out.print("-----------------------------------------------\nJAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC\nMonth of Birth(Options Above): ");
+            String month_of_birth = scan.nextLine();
+            System.out.print("Phone Number: ");
+            String phone_number = scan.nextLine();
+            System.out.print("--------------------\nmobile work phone other\nPhone Type(Options Above): ");
+            String phone_type = scan.nextLine();
+            Statement st = conn.createStatement();
+            String query1 = "SELECT MAX(customer_ID) + 1 AS ID FROM COFFEE_BOUTIQUE.CUSTOMER";
+
+            int customer_ID = 0;
+            ResultSet res1;
+            try {
+              res1 = st.executeQuery(query1);
+            if (!res1.isBeforeFirst()) {
+                customer_ID = 0;
+              } else {
+                while (res1.next()) {
+                  customer_ID = res1.getInt("ID");
+                }
+              }
+            } catch (SQLException e1) {
+            while (e1 != null) {
+              System.out.println("Message = "+ e1.toString());
+              e1 = e1.getNextException();
+              }
+            }
+
+            Statement st2 = conn.createStatement();
+            PreparedStatement prep_statement = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (?,?,?,?,?,?,?,?,?)");
+            prep_statement.setString(1, String.valueOf(customer_ID));
+            prep_statement.setString(2, first_name);
+            prep_statement.setString(3, last_name);
+            prep_statement.setString(4, middle_inital);
+            prep_statement.setString(5, day_of_birth);
+            prep_statement.setString(6, month_of_birth);
+            prep_statement.setString(7, phone_number);
+            prep_statement.setString(8, phone_type);
+            prep_statement.setString(9, "0");
+
+            try {
+                st2.executeUpdate(prep_statement.toString());
+                System.out.println("New Customer ID: " + customer_ID);
+              }
+                catch (SQLException e1) {
+                  while (e1 != null) {
+                    System.out.println(e1.toString());
+                    e1 = e1.getNextException();
+                  }
+                }
   };
   //Task #10
   public static void task_10(Connection conn) {
@@ -230,10 +285,112 @@ public static void main(String[] args) throws
   public static void task_12(Connection conn) throws
           SQLException, ClassNotFoundException {
 
-  };
+    Scanner scan = new Scanner(System.in);
+    System.out.println("\n----Adding Purchase(s)----\n");
+    System.out.print("Enter Customer ID: ");
+    String customer = scan.nextLine();
+
+    System.out.print("Enter Store ID: ");
+    String store = scan.nextLine();
+
+    System.out.print("Enter time of purchase (format: HH:SS): ");
+    String timepurchase = scan.nextLine();
+
+    System.out.print("How many different types of coffees: ");
+    int numberOfTypes = scan.nextInt(); scan.nextLine();
+
+    if (numberOfTypes < 0) {
+      System.out.println("Please enter an amount greater than 0 next time...");
+      return;
+    }
+
+    String arr_coffee_ids[] = new String[numberOfTypes];
+    String arr_coffee_purchase[] = new String[numberOfTypes];
+    String arr_coffee_redeem[] = new String[numberOfTypes];
+    String total_amount_per_coffee[] = new String[numberOfTypes];
+    int x = 0;
+    while (x < numberOfTypes) {
+      System.out.print("For Coffee #" + (x + 1) +", enter Coffee ID: ");
+      arr_coffee_ids[x] = scan.nextLine();
+      System.out.print("For Coffee ID " + arr_coffee_ids[x] +", enter number you wish to purchase without redeeming points: ");
+      arr_coffee_purchase[x] = scan.nextLine();
+      System.out.print("For Coffee ID " + arr_coffee_ids[x] +", enter number you wish to redeem for free: ");
+      arr_coffee_redeem[x] = scan.nextLine();
+      total_amount_per_coffee[x] = String.valueOf(Integer.parseInt(arr_coffee_purchase[x]) + Integer.parseInt(arr_coffee_redeem[x]));
+      x = x + 1;
+    }
+
+    System.out.println("Order Received\n--------------\nCoffee | Purchase | Redeem | Total\n--------------------------------");
+    for (int y = 0; y < numberOfTypes; y++) {
+      System.out.println(arr_coffee_ids[y] + "      | " + arr_coffee_purchase[y] + "        | " + arr_coffee_redeem[y]  + "      | " + total_amount_per_coffee[y]);
+    }
+
+    /* While loop - query for each of those coffees id's respective points */
+    ResultSet result;
+    float redeem = 0;
+    Statement st = conn.createStatement();
+    float total_points_needed_to_redeem = 0;
+    for (int z = 0; z < numberOfTypes; z++) {
+      PreparedStatement prep_statement = conn.prepareStatement(" SELECT redeem_points FROM COFFEE_BOUTIQUE.COFFEE WHERE coffee_ID = ? ");
+      prep_statement.setString(1, arr_coffee_ids[z]);
+      try {
+          result = st.executeQuery(prep_statement.toString());
+          if (!result.isBeforeFirst()) {
+            System.out.println("This coffee doesn't exist!");
+            return;
+          }
+          while (result.next()) {
+            redeem = result.getFloat("redeem_points");
+            total_points_needed_to_redeem += redeem * Integer.parseInt(arr_coffee_redeem[z]);
+            }
+        }
+          catch (SQLException e1) {
+            while (e1 != null) {
+              System.out.println("Message = "+ e1.toString());
+              e1 = e1.getNextException();
+              }
+            }
+          }
+    System.out.println("Total Points Needed: " + total_points_needed_to_redeem);
+
+    /*Check to see if the customer has enough points */
+    Statement st2 = conn.createStatement();
+    ResultSet result2;
+    float customer_points = 0;
+    PreparedStatement prep_statement2 = conn.prepareStatement("SELECT points_earned FROM COFFEE_BOUTIQUE.CUSTOMER WHERE  customer_ID = ? ");
+    prep_statement2.setString(1, customer);
+    try {
+        result2 = st2.executeQuery(prep_statement2.toString());
+        if (!result2.isBeforeFirst()) {
+          System.out.println("Can't find this customer!");
+          return;
+        }
+        while (result2.next()) {
+          customer_points = result2.getFloat("points_earned");
+          }
+      }
+        catch (SQLException e1) {
+          while (e1 != null) {
+            System.out.println("Message = "+ e1.toString());
+            e1 = e1.getNextException();
+            }
+          }
+    if (customer_points < total_points_needed_to_redeem) {
+      System.out.println("This customer doesn't have enough points to redeem the coffees!");
+    }
+    System.out.println("Customer has: " + customer_points);
+
+    /*At this point, we know the customer has the correct amount of points to redeem the coffees (remember to get the diff)
+
+    number of sales will be equal to the number of coffee types. quantity will be equal to purchase + redeem. purchase portion will come
+    from the total amount of the number of coffess wanted by customer by type. */
+
+
+
+  }
   //Task #13 - X
   public static void task_13(Connection conn) throws
-          SQLException, ClassNotFoundException{
+          SQLException, ClassNotFoundException {
 
   };
   //Task #14
