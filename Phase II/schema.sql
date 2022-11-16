@@ -51,14 +51,11 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.COFFEE(
 
     );
 
-
 CREATE DOMAIN COFFEE_BOUTIQUE.months AS varchar(3)
     CHECK ( (VALUE IN ('JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC')) );
 
 CREATE DOMAIN COFFEE_BOUTIQUE.phone_enum AS varchar(6)
     CHECK ( (VALUE IN ('home', 'mobile', 'work', 'other')) );
-
---- Trigger need to ensure that customer 'points_earned' only increases if that customer is a member
 
 CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.CUSTOMER(
     customer_ID integer,
@@ -75,9 +72,6 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.CUSTOMER(
     CONSTRAINT PK_CUSTOMER PRIMARY KEY(customer_ID)
 
     );
-
---- Add trigger so that when a loyalty_level is assigned to a customer, that customer
---- gets the appropriate booster_factor
 
 CREATE DOMAIN COFFEE_BOUTIQUE.loyalty_level AS varchar(10)
     CHECK ( (VALUE IN ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond')) );
@@ -120,8 +114,6 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.SALE(
 
     );
 
-
-
 CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.PROMOTION(
     promotion_ID integer,
     name varchar(50) NOT NULL,
@@ -132,7 +124,6 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.PROMOTION(
     CONSTRAINT PK_PROMOTION PRIMARY KEY (promotion_ID)
 
     );
-
 
 CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.PROMOTES(
     promotion_ID integer,
@@ -161,4 +152,8 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.CARRIES(
         ON UPDATE CASCADE ON DELETE CASCADE
 
     );
+
+INSERT INTO COFFEE_BOUTIQUE.CARRIES VALUES (1, 1);
+
+INSERT INTO COFFEE_BOUTIQUE.PROMOTES VALUES (1, 1);
 

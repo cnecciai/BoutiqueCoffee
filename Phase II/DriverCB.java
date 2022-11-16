@@ -117,9 +117,93 @@ public static void main(String[] args) throws
   public static void task_5(Connection conn) {
 
   };
-  //Task #6
-  public static void task_6(Connection conn) {
+  //Task #6 - X
+  public static void task_6(Connection conn) throws
+          SQLException, ClassNotFoundException {
 
+      System.out.println("\n----Promotional Offers----\n");
+      System.out.println("(1) - List all promotional offers for a store");
+      System.out.println("(2) - Offers on a specific coffee at a store");
+      System.out.print("Choice: ");
+
+      String store = "";
+      String coffee = "";
+
+      String rpromotion_ID = "";
+      String rstore_ID = "";
+      String rcoffee = "";
+      String rpromotion_name = "";
+
+      ResultSet res1;
+
+      Scanner scan = new Scanner(System.in);
+      String choice = scan.nextLine();
+
+      if (choice.equals("1")) {
+        System.out.print("Enter Store ID: ");
+        store = scan.nextLine();
+        Statement st = conn.createStatement();
+        PreparedStatement prep_statement = conn.prepareStatement("SELECT * FROM COFFEE_BOUTIQUE.CARRIES INNER JOIN COFFEE_BOUTIQUE.PROMOTION ON store_ID = ?");
+        prep_statement.setString(1, store);
+
+        try {
+            res1 = st.executeQuery(prep_statement.toString());
+            if (!res1.isBeforeFirst()) {
+              System.out.println("No promotions are currently offered at this store");
+              return;
+            }
+            System.out.println("QUERY SUCCESSFULL");
+            System.out.println("-----------------");
+            System.out.println("Promotion Name");
+            System.out.println("-----------------------");
+            while (res1.next()) {
+              rpromotion_name = res1.getString("name");
+              System.out.println( rpromotion_name);
+              }
+          }
+            catch (SQLException e1) {
+              while (e1 != null) {
+                System.out.println("Message = "+ e1.toString());
+                e1 = e1.getNextException();
+                }
+            }
+
+      } else if (choice.equals("2")) {
+
+        System.out.print("Enter Store ID: ");
+        store = scan.nextLine();
+        System.out.print("Enter Coffee ID: ");
+        coffee = scan.nextLine();
+        Statement st = conn.createStatement();
+        PreparedStatement prep_statement = conn.prepareStatement(" SELECT * FROM COFFEE_BOUTIQUE.PROMOTES  JOIN COFFEE_BOUTIQUE.CARRIES USING(promotion_ID) JOIN COFFEE_BOUTIQUE.PROMOTION USING(promotion_ID) WHERE store_ID = ? and coffee_id = ? ");
+        prep_statement.setString(1, store);
+        prep_statement.setString(2, coffee);
+        try {
+            res1 = st.executeQuery(prep_statement.toString());
+            if (!res1.isBeforeFirst()) {
+              System.out.println("No promotions for this coffee are currently offered at this store");
+              return;
+            }
+            System.out.println("QUERY SUCCESSFULL");
+            System.out.println("-----------------");
+            System.out.println("Promotion_ID | Promotion Name");
+            System.out.println("-----------------------");
+            while (res1.next()) {
+              rpromotion_ID = res1.getString("promotion_ID");
+              rpromotion_name = res1.getString("name");
+              System.out.println("           "+ rpromotion_ID + " | " + rpromotion_name);
+              }
+            }
+            catch (SQLException e1) {
+              while (e1 != null) {
+                System.out.println("Message = "+ e1.toString());
+                e1 = e1.getNextException();
+                }
+            }
+      } else /*error*/ {
+        System.out.println("ERROR: CHOOSE EITHER 1 OR 2");
+        return;
+      }
   };
   //Task #7
   public static void task_7(Connection conn) {
@@ -129,8 +213,9 @@ public static void main(String[] args) throws
   public static void task_8(Connection conn) {
 
   };
-  //Task #9
-  public static void task_9(Connection conn) {
+  //Task #9 - X
+  public static void task_9(Connection conn) throws
+          SQLException, ClassNotFoundException {
 
   };
   //Task #10
@@ -141,12 +226,14 @@ public static void main(String[] args) throws
   public static void task_11(Connection conn) {
 
   };
-  //Task #12
-  public static void task_12(Connection conn) {
+  //Task #12 - X
+  public static void task_12(Connection conn) throws
+          SQLException, ClassNotFoundException {
 
   };
-  //Task #13
-  public static void task_13(Connection conn) {
+  //Task #13 - X
+  public static void task_13(Connection conn) throws
+          SQLException, ClassNotFoundException{
 
   };
   //Task #14
