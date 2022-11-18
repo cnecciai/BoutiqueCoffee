@@ -12,7 +12,7 @@ RETURNS TRIGGER AS $$
         WHERE NEW.coffee_ID = C.coffee_id;
 
         total_purchase_amount = NEW.quantity * total_purchase_amount;
-        customer_paid = (NEW.purchase_portion * 100 + NEW.redeem_portion) / 100;
+        customer_paid = (NEW.purchase_portion + NEW.redeem_portion / 100);
 
         IF total_purchase_amount = customer_paid THEN
             RETURN NEW;
@@ -120,7 +120,7 @@ RETURNS TRIGGER AS $$
     END;
     $$ language PLPGSQL;
 
-DROP TRIGGER IF EXISTS add_redeem_points ON COFFEE_BOUTIQUE.CUSTOMER;
+DROP TRIGGER IF EXISTS add_redeem_points ON COFFEE_BOUTIQUE.SALE;
 CREATE TRIGGER add_redeem_points
     AFTER INSERT ON COFFEE_BOUTIQUE.SALE
     FOR EACH ROW

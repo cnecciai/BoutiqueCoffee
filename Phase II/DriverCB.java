@@ -306,32 +306,35 @@ public static void main(String[] args) throws
 
     String arr_coffee_ids[] = new String[numberOfTypes];
     String arr_coffee_purchase[] = new String[numberOfTypes];
+    float cost_of_coffee_type[] = new float[numberOfTypes];
     String arr_coffee_redeem[] = new String[numberOfTypes];
-    String total_amount_per_coffee[] = new String[numberOfTypes];
-    int x = 0;
-    while (x < numberOfTypes) {
+    float redeem_cost[] = new float[numberOfTypes];
+    String total_quantity_per_coffee[] = new String[numberOfTypes];
+
+    for (int x = 0; x < numberOfTypes; x++) {
       System.out.print("For Coffee #" + (x + 1) +", enter Coffee ID: ");
       arr_coffee_ids[x] = scan.nextLine();
       System.out.print("For Coffee ID " + arr_coffee_ids[x] +", enter number you wish to purchase without redeeming points: ");
       arr_coffee_purchase[x] = scan.nextLine();
       System.out.print("For Coffee ID " + arr_coffee_ids[x] +", enter number you wish to redeem for free: ");
       arr_coffee_redeem[x] = scan.nextLine();
-      total_amount_per_coffee[x] = String.valueOf(Integer.parseInt(arr_coffee_purchase[x]) + Integer.parseInt(arr_coffee_redeem[x]));
-      x = x + 1;
+      total_quantity_per_coffee[x] = String.valueOf(Integer.parseInt(arr_coffee_purchase[x]) + Integer.parseInt(arr_coffee_redeem[x]));
     }
 
     System.out.println("Order Received\n--------------\nCoffee | Purchase | Redeem | Total\n--------------------------------");
     for (int y = 0; y < numberOfTypes; y++) {
-      System.out.println(arr_coffee_ids[y] + "      | " + arr_coffee_purchase[y] + "        | " + arr_coffee_redeem[y]  + "      | " + total_amount_per_coffee[y]);
+      System.out.println(arr_coffee_ids[y] + "      | " +
+      arr_coffee_purchase[y] + "        | " +
+      arr_coffee_redeem[y]  + "      | " +
+      total_quantity_per_coffee[y]);
     }
 
     /* While loop - query for each of those coffees id's respective points */
     ResultSet result;
-    float redeem = 0;
     Statement st = conn.createStatement();
     float total_points_needed_to_redeem = 0;
     for (int z = 0; z < numberOfTypes; z++) {
-      PreparedStatement prep_statement = conn.prepareStatement(" SELECT redeem_points FROM COFFEE_BOUTIQUE.COFFEE WHERE coffee_ID = ? ");
+      PreparedStatement prep_statement = conn.prepareStatement(" SELECT price, redeem_points FROM COFFEE_BOUTIQUE.COFFEE WHERE coffee_ID = ? ");
       prep_statement.setString(1, arr_coffee_ids[z]);
       try {
           result = st.executeQuery(prep_statement.toString());
@@ -340,8 +343,9 @@ public static void main(String[] args) throws
             return;
           }
           while (result.next()) {
-            redeem = result.getFloat("redeem_points");
-            total_points_needed_to_redeem += redeem * Integer.parseInt(arr_coffee_redeem[z]);
+            redeem_cost[z] = result.getFloat("redeem_points");
+            cost_of_coffee_type[z] = result.getFloat("price");
+            total_points_needed_to_redeem += redeem_cost[z] * Integer.parseInt(arr_coffee_redeem[z]);
             }
         }
           catch (SQLException e1) {
@@ -351,6 +355,7 @@ public static void main(String[] args) throws
               }
             }
           }
+    System.out.println("Cost of coffee type: " + cost_of_coffee_type[0]);
     System.out.println("Total Points Needed: " + total_points_needed_to_redeem);
 
     /*Check to see if the customer has enough points */
@@ -380,13 +385,77 @@ public static void main(String[] args) throws
     }
     System.out.println("Customer has: " + customer_points);
 
-    /*At this point, we know the customer has the correct amount of points to redeem the coffees (remember to get the diff)
+    //Get maximum sale_ID from COFFEE_BOUTIQUE.sale
+    Statement st_3 = conn.createStatement();
+    String query_3 = "SELECT MAX(sale_ID) + 1 AS ID FROM COFFEE_BOUTIQUE.SALE";
+    int sale_ids[] = new int[numberOfTypes];
+    sale_ids[0] = 0;
+    ResultSet res3;
+    try {
+      res3 = st.executeQuery(query_3);
+    if (!res3.isBeforeFirst()) {
+        sale_ids[0] = 0;
+      } else {
+        while (res3.next()) {
+          sale_ids[0] = res3.getInt("ID");
+        }
+      }
+    } catch (SQLException e1) {
+    while (e1 != null) {
+      System.out.println("Message = "+ e1.toString());
+      e1 = e1.getNextException();
+      }
+    }
 
-    number of sales will be equal to the number of coffee types. quantity will be equal to purchase + redeem. purchase portion will come
-    from the total amount of the number of coffess wanted by customer by type. */
+    if (numberOfTypes > 1) {
+      int ind = 0;
+      for (int sales = sale_ids[0]; ind < numberOfTypes; sales++) {
+        sale_ids[ind] = sales;
+        ind = ind + 1;
+      }
+    }
 
+    //Everything is ready to executeUpdate
+    float redeem_portion = 0;
+    float purchase_portion = 0;
+    PreparedStatement prep_statement_3;
+    PreparedStatement query_arr[] = new PreparedStatement[numberOfTypes];
+    for (int trans_num = 0; trans_num < numberOfTypes; trans_num++) {
+      prep_statement_3 = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.SALE VALUES ( ?, ?, ?, ?, ?, ?, ?, ?) ");
+      prep_statement_3.setString(1, String.valueOf(sale_ids[trans_num]));
+      prep_statement_3.setString(2, customer);
+      prep_statement_3.setString(3, store);
+      prep_statement_3.setString(4, arr_coffee_ids[trans_num]);
+      prep_statement_3.setString(5, total_quantity_per_coffee[trans_num]);
+      prep_statement_3.setString(6, timepurchase);
+      purchase_portion = Integer.parseInt(arr_coffee_purchase[trans_num]) * cost_of_coffee_type[trans_num];
+      prep_statement_3.setString(7, String.valueOf(purchase_portion));
+      redeem_portion = Integer.parseInt(arr_coffee_redeem[trans_num]) * redeem_cost[trans_num];
+      prep_statement_3.setString(8, String.valueOf(redeem_portion));
+      query_arr[trans_num] = prep_statement_3;
+    }
 
-
+    //Statements are prepared, prepare to query
+    System.out.println("Submitting Queries...");
+    Statement st_sale = conn.createStatement();
+    try {
+      conn.setAutoCommit(false);
+      for (int fin = 0; fin < numberOfTypes; fin++) {
+        st_sale.executeUpdate(query_arr[fin].toString());
+        }
+        conn.commit();
+        for (int sub = 0; sub < numberOfTypes; sub++) {
+          System.out.println("New Sale Added Successfully: " + sale_ids[sub]);
+        }
+      }
+        catch (SQLException e1) {
+          conn.rollback();
+          System.out.println("Error: Rollback Initiated");
+          while (e1 != null) {
+            System.out.println(e1.toString());
+            e1 = e1.getNextException();
+          }
+        }
   }
   //Task #13 - X
   public static void task_13(Connection conn) throws
