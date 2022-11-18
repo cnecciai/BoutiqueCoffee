@@ -61,8 +61,7 @@ public static void main(String[] args) throws
 
   };
   //Task #3
-  public static void task_3(Connection conn) throws
-          SQLException, ClassNotFoundException {
+  public static void task_3(Connection conn) throws SQLException, ClassNotFoundException {
 
     Scanner scan = new Scanner(System.in);
 
@@ -107,6 +106,7 @@ public static void main(String[] args) throws
           catch(SQLException e2) { System.out.println(e2.toString()); }
         }
   };
+
   //Task #4
   public static void task_4(Connection conn) {
 
@@ -116,8 +116,7 @@ public static void main(String[] args) throws
 
   };
   //Task #6 - X
-  public static void task_6(Connection conn) throws
-          SQLException, ClassNotFoundException {
+  public static void task_6(Connection conn) throws SQLException, ClassNotFoundException {
 
       System.out.println("\n----Promotional Offers----\n");
       System.out.println("(1) - List all promotional offers for a store");
@@ -201,6 +200,7 @@ public static void main(String[] args) throws
         return;
       }
   };
+
   //Task #7
   public static void task_7(Connection conn) {
 
@@ -210,8 +210,7 @@ public static void main(String[] args) throws
 
   };
   //Task #9 - X
-  public static void task_9(Connection conn) throws
-          SQLException, ClassNotFoundException {
+  public static void task_9(Connection conn) throws SQLException, ClassNotFoundException {
 
             Scanner scan = new Scanner(System.in);
             System.out.println("\n----Add a new Customer----\n");
@@ -273,6 +272,7 @@ public static void main(String[] args) throws
                   }
                 }
   };
+
   //Task #10
   public static void task_10(Connection conn) {
 
@@ -282,20 +282,16 @@ public static void main(String[] args) throws
 
   };
   //Task #12 - X
-  public static void task_12(Connection conn) throws
-          SQLException, ClassNotFoundException {
+  public static void task_12(Connection conn) throws SQLException, ClassNotFoundException {
 
     Scanner scan = new Scanner(System.in);
     System.out.println("\n----Adding Purchase(s)----\n");
     System.out.print("Enter Customer ID: ");
     String customer = scan.nextLine();
-
     System.out.print("Enter Store ID: ");
     String store = scan.nextLine();
-
     System.out.print("Enter time of purchase (format: HH:SS): ");
     String timepurchase = scan.nextLine();
-
     System.out.print("How many different types of coffees: ");
     int numberOfTypes = scan.nextInt(); scan.nextLine();
 
@@ -304,6 +300,7 @@ public static void main(String[] args) throws
       return;
     }
 
+    //Necessary containers for information
     String arr_coffee_ids[] = new String[numberOfTypes];
     String arr_coffee_purchase[] = new String[numberOfTypes];
     float cost_of_coffee_type[] = new float[numberOfTypes];
@@ -311,22 +308,33 @@ public static void main(String[] args) throws
     float redeem_cost[] = new float[numberOfTypes];
     String total_quantity_per_coffee[] = new String[numberOfTypes];
 
+    //Get user input
     for (int x = 0; x < numberOfTypes; x++) {
       System.out.print("For Coffee #" + (x + 1) +", enter Coffee ID: ");
       arr_coffee_ids[x] = scan.nextLine();
-      System.out.print("For Coffee ID " + arr_coffee_ids[x] +", enter number you wish to purchase without redeeming points: ");
+      System.out.print("For Coffee ID: " + arr_coffee_ids[x] +", how many coffees do you \nwish to purchase without redeeming points: ");
       arr_coffee_purchase[x] = scan.nextLine();
-      System.out.print("For Coffee ID " + arr_coffee_ids[x] +", enter number you wish to redeem for free: ");
+      System.out.print("For Coffee ID: " + arr_coffee_ids[x] +", how many coffees do you \nwish to redeem with points: ");
       arr_coffee_redeem[x] = scan.nextLine();
       total_quantity_per_coffee[x] = String.valueOf(Integer.parseInt(arr_coffee_purchase[x]) + Integer.parseInt(arr_coffee_redeem[x]));
     }
 
+    //Ensure correct input
     System.out.println("Order Received\n--------------\nCoffee | Purchase | Redeem | Total\n--------------------------------");
     for (int y = 0; y < numberOfTypes; y++) {
       System.out.println(arr_coffee_ids[y] + "      | " +
       arr_coffee_purchase[y] + "        | " +
       arr_coffee_redeem[y]  + "      | " +
       total_quantity_per_coffee[y]);
+    }
+
+    //If incorrect input...
+    System.out.print("Is your order correct? (Y/N): ");
+    String corr_inp = scan.nextLine();
+    if (corr_inp.equalsIgnoreCase("y")) {
+    } else {
+      System.out.println("Wrong order... Exiting");
+      return;
     }
 
     /* While loop - query for each of those coffees id's respective points */
@@ -355,8 +363,8 @@ public static void main(String[] args) throws
               }
             }
           }
-    System.out.println("Cost of coffee type: " + cost_of_coffee_type[0]);
-    System.out.println("Total Points Needed: " + total_points_needed_to_redeem);
+    //System.out.println("Cost of coffee type: " + cost_of_coffee_type[0]);
+    //System.out.println("Total Points Needed: " + total_points_needed_to_redeem);
 
     /*Check to see if the customer has enough points */
     Statement st2 = conn.createStatement();
@@ -383,7 +391,7 @@ public static void main(String[] args) throws
     if (customer_points < total_points_needed_to_redeem) {
       System.out.println("This customer doesn't have enough points to redeem the coffees!");
     }
-    System.out.println("Customer has: " + customer_points);
+    //System.out.println("Customer has: " + customer_points);
 
     //Get maximum sale_ID from COFFEE_BOUTIQUE.sale
     Statement st_3 = conn.createStatement();
@@ -436,7 +444,6 @@ public static void main(String[] args) throws
     }
 
     //Statements are prepared, prepare to query
-    System.out.println("Submitting Queries...");
     Statement st_sale = conn.createStatement();
     try {
       conn.setAutoCommit(false);
@@ -445,7 +452,7 @@ public static void main(String[] args) throws
         }
         conn.commit();
         for (int sub = 0; sub < numberOfTypes; sub++) {
-          System.out.println("New Sale Added Successfully: " + sale_ids[sub]);
+          System.out.println("New Sale Added Successfully with Sale ID: " + sale_ids[sub]);
         }
       }
         catch (SQLException e1) {
@@ -457,11 +464,74 @@ public static void main(String[] args) throws
           }
         }
   }
+
   //Task #13 - X
-  public static void task_13(Connection conn) throws
-          SQLException, ClassNotFoundException {
+  public static void task_13(Connection conn) throws SQLException, ClassNotFoundException {
+
+    Scanner scan = new Scanner(System.in);
+    System.out.println("\n----Displaying full coffee menu & info----\n");
+    Statement st = conn.createStatement();
+    String query1 = "SELECT * FROM COFFEE_BOUTIQUE.COFFEE";
+    ResultSet res1;
+
+    try {
+      res1 = st.executeQuery(query1);
+      if (!res1.isBeforeFirst()) {
+        System.out.println("No items are currently offered by BoutiqueCoffee");
+        return;
+      }
+
+      String coffee_ID = "";
+      String coffee_name = "";
+      String description = "";
+      String country_of_origin = "";
+      String intensity = "";
+      String price = "";
+      String reward_points = "";
+      String redeem_points = "";
+
+      System.out.printf("|%-8s", "Coffee ID"  );
+      System.out.printf("|%-25s", "Name" );
+      System.out.printf("|%-50s", "Description" );
+      System.out.printf("|%-18s", "Country of Origin");
+      System.out.printf("|%-10s", "Intensity" );
+      System.out.printf("|%-10s", "Price" );
+      System.out.printf("|%-10s", "Reward Points");
+      System.out.printf("|%-10s", "Redeem Points|");
+      System.out.println("\n|---------|-------------------------|--------------------------------------------------|------------------|----------|----------|-------------|-------------|");
+
+      while (res1.next()) {
+
+          coffee_ID = res1.getString("coffee_ID");
+          coffee_name = res1.getString("name");
+          description = res1.getString("description");
+          country_of_origin = res1.getString("country_of_origin");
+          intensity = res1.getString("intensity");
+          price = res1.getString("price");
+          reward_points = res1.getString("reward_points");
+          redeem_points = res1.getString("redeem_points");
+
+          System.out.printf("|%-9s", coffee_ID  );
+          System.out.printf("|%-25s", coffee_name );
+          System.out.printf("|%-50s", description );
+          System.out.printf("|%-18s", country_of_origin);
+          System.out.printf("|%-10s", intensity );
+          System.out.printf("|$%-9.2f", Float.parseFloat(price) );
+          System.out.printf("|%-13s", reward_points);
+          System.out.printf("|%-10s", redeem_points);
+          System.out.println("");
+
+      }
+      System.out.println("|---------|-------------------------|--------------------------------------------------|------------------|----------|----------|-------------|-------------|\n");
+    } catch(SQLException e1) {
+      while (e1 != null) {
+        System.out.println(e1.toString());
+        e1 = e1.getNextException();
+      }
+    }
 
   };
+
   //Task #14
   public static void task_14(Connection conn) {
 
@@ -474,6 +544,7 @@ public static void main(String[] args) throws
   public static void task_16(Connection conn) {
 
   };
+
   //-----------------------------------
   //-----------------------------------
   //-----------------------------------

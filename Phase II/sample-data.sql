@@ -34,18 +34,18 @@ INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (19, 'Bryon', 'Garnet', 'W', '15', '
 INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (20, 'Ford', 'Phillip', 'A', '13', 'AUG', '5449106245', 'work',0);
 
 -------------------12 COFFEES-------------------
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (1, 'Caffe Latte', 'Basic Coffee', 'Canada', 1, 2.95, 29.5, 295);
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (2, 'Caffe Mocha', 'Basic Coffee', 'Hungary', 2, 3.65, 36.5, 365);
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (3, 'White Chocolate Mocha', 'Basic Coffee', 'United States', 3, 4.15, 41.5, 415);
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (4, 'Freshly Brewed Coffee', 'Basic Coffee', 'Indonesia', 4, 4.65, 46.5, 465);
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (5, 'Cinnamon Dolce Latte', 'Basic Coffee', 'Brazil', 5, 7.30, 73.0, 730);
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (6, 'Skinny Vanilla Latte', 'Basic Coffee', 'Russia', 6, 3.45, 34.5, 345);
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (7, 'Caramel Macchiato', 'Basic Coffee', 'France', 7, 7.45, 74.5, 745);
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (8, 'Caramel Flan Latte', 'Basic Coffee', 'Monaco', 8, 7.15, 71.5, 715);
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (9, 'Flat White', 'Basic Coffee', 'Denmark', 9, 7.80, 78.0, 780);
+INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (1, 'Caffe Latte', 'Italian origin made with espresso and steamed milk', 'Canada', 1, 2.95, 29.5, 295);
+INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (2, 'Caffe Mocha', 'Chocolate-flavoured warm beverage', 'Hungary', 2, 3.65, 36.5, 365);
+INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (3, 'White Chocolate Mocha', 'Varient on Caffee Mocha w/ white chocolate', 'United States', 3, 4.15, 41.5, 415);
+INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (4, 'Freshly Brewed Coffee', 'Basic', 'Indonesia', 4, 4.65, 46.5, 465);
+INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (5, 'Cinnamon Dolce Latte', 'Cinnamon dolce-flavored syrup', 'Brazil', 5, 7.30, 73.0, 730);
+INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (6, 'Skinny Vanilla Latte', 'Vanilla almond milk/soy milk', 'Russia', 6, 3.45, 34.5, 345);
+INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (7, 'Caramel Macchiato', 'A Boutique Coffee favorite!', 'France', 7, 7.45, 74.5, 745);
+INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (8, 'Caramel Flan Latte', 'Freshly steamed milk and rich flan flavored syrup', 'Monaco', 8, 7.15, 71.5, 715);
+INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (9, 'Flat White', 'Blend of micro-foamed milk poured over espresso', 'Denmark', 9, 7.80, 78.0, 780);
 INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (10, 'Skinny Peppermint Mocha', 'Basic Coffee', 'Australia', 10, 7.15, 71.5, 715);
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (11, 'Pumpkin Spice Latte', 'Basic Coffee', 'Japan', 11, 7.30, 73.0, 730);
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (12, 'Toasted Graham Latte', 'Basic Coffee', 'Peru', 12, 7.95, 79.5, 795);
+INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (11, 'Pumpkin Spice Latte', 'Voted #1 by all women', 'Japan', 11, 7.30, 73.0, 730);
+INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (12, 'Toasted Graham Latte', 'Graham cracker goodness', 'Peru', 12, 7.95, 79.5, 795);
 
 
 -------------------3 PROMOTIONS-------------------
