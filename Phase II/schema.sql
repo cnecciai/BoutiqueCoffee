@@ -2,6 +2,11 @@
 --- TEAM MEMBERS: CLARK, DHARMA, DANIEL
 --- Phase #1
 ---CREATE SCHEMA
+
+/*For proper program function, loyalty levels must first be inserted then tasks
+can be performed*/
+
+
 DROP SCHEMA IF EXISTS COFFEE_BOUTIQUE CASCADE ;
 CREATE SCHEMA IF NOT EXISTS COFFEE_BOUTIQUE;
 
@@ -83,12 +88,6 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.CUSTOMER(
         ON UPDATE CASCADE ON DELETE NO ACTION
     );
 
---CREATE DOMAIN COFFEE_BOUTIQUE.loyalty_level AS varchar(10)
-   --CHECK ( (VALUE IN ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond')) );
-
-
-
-
 
 CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.SALE(
     sale_ID integer,
@@ -99,7 +98,7 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.SALE(
         CHECK ( quantity >= 1 ),
     purchase_time time NOT NULL,
     purchase_portion float NOT NULL,
-    redeem_portion float NOT NULL DEFAULT 0, --- make note that this is points (cents) off the total purchase
+    redeem_portion float NOT NULL DEFAULT 0,
 
     CONSTRAINT PK_SALE PRIMARY KEY (sale_ID),
 

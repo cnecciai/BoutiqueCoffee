@@ -3,6 +3,11 @@
 cd C:\Users\clark\OneDrive\Desktop\CS1555\BoutiqueCoffee\Phase II
 javac -cp "postgresql-42.5.0.jar;." DriverCB.java
 java -cp "postgresql-42.5.0.jar;." DriverCB
+
+For proper program function, loyalty levels must first be inserted then tasks
+can be performed
+
+
 */
 import java.util.Scanner;
 import java.util.Properties;
@@ -17,7 +22,7 @@ public static void main(String[] args) throws
   String url = "jdbc:postgresql://localhost:5432/";
   Properties props = new Properties();
   props.setProperty("user", "postgres"); //cpn14
-  props.setProperty("password", "INSERT_PASSWORD_HERE"); //BillieBoi#25
+  props.setProperty("password", "BillieBoi"); //BillieBoi#25
   Connection conn = DriverManager.getConnection(url, props);
   System.out.println("Connection made to: " + conn);
   System.out.println("\n\n----Beginning Coffee Boutique Program----\n\n");
@@ -74,7 +79,11 @@ public static void main(String[] args) throws
       String storeID = "";
       while (res1.next()) {
         storeID = res1.getString("ID");
+        if (storeID == null) {
+          storeID = "0";
+        }
       }
+      System.out.println(storeID);
       // prepare statement
       PreparedStatement stmt = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.STORE VALUES (?, ?, ?, ?, ?)");
       stmt.setString(1, storeID);
@@ -96,6 +105,9 @@ public static void main(String[] args) throws
     }
   };
   //Task #2
+  /*To maintain consistency with our schema setup, the reward points must be 10x
+  the price of a coffee and the redeem_points must be 100x the price of a coffee
+  This constraint is checked by a trigger function within the schema trigger file*/
   public static void task_2(Connection conn) {
     //Declaring Task
     Scanner scan = new Scanner(System.in);
@@ -128,6 +140,9 @@ public static void main(String[] args) throws
       String coffeeID = "";
       while (searchRes.next()){
         coffeeID = searchRes.getString("ID");
+        if (coffeeID == null) {
+          coffeeID = "0";
+        }
       }
 
       //Create Insert Statement
@@ -178,9 +193,17 @@ public static void main(String[] args) throws
     String query1 = "SELECT MAX(promotion_ID) + 1 AS ID FROM COFFEE_BOUTIQUE.PROMOTION";
     ResultSet res1 = st.executeQuery(query1);
     String promotion_ID = "";
-    while (res1.next()) {
-        promotion_ID = res1.getString("ID");
+    if (!res1.isBeforeFirst()) {
+      promotion_ID = "0";
+    } else {
+      while (res1.next()) {
+          promotion_ID = res1.getString("ID");
+          if (promotion_ID == null) {
+            promotion_ID = "0";
+          }
+      }
     }
+    System.out.println(promotion_ID);
     System.out.println("---------------------------------------------");
     PreparedStatement prep_statement = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.PROMOTION VALUES (?,?,?,?)");
     prep_statement.setString(1, promotion_ID);
@@ -259,7 +282,7 @@ public static void main(String[] args) throws
             System.out.println("No stores are currently offering any promotions");
           while(searchRes.next()){
             //Print Results
-            System.out.println("The Store with ID " + searchRes.getString("store_ID") + " Carries Promotion: " + searchRes.getString("promotion_ID"));
+            System.out.println("The Store with ID: " + searchRes.getString("store_ID") + " carries Promotion: " + searchRes.getString("promotion_ID"));
           }
         }
         catch (SQLException e1){
@@ -283,7 +306,7 @@ public static void main(String[] args) throws
             String searchQuery2 = "SELECT store_ID FROM COFFEE_BOUTIQUE.CARRIES WHERE promotion_ID = " + promotionID;
             ResultSet searchRes2 = st2.executeQuery(searchQuery2);
             while(searchRes2.next()){
-              System.out.println("The Store with ID " + searchRes2.getString("store_ID") + " Carries Promotion: " + promotionID + " For the Coffee with ID " + coffeeID);
+              System.out.println("The Store with ID: " + searchRes2.getString("store_ID") + " carries Promotion: " + promotionID + " for the Coffee with ID " + coffeeID);
             }
           }
         }
@@ -518,6 +541,9 @@ public static void main(String[] args) throws
         levelID = "";
         while(maxID.next()){
           levelID = maxID.getString("ID");
+          if (levelID == null) {
+            levelID = "0";
+          }
         }
         Statement st3 = conn.createStatement();
         PreparedStatement prep_statement = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.LOYALTY_PROGRAM VALUES (?,?,?)");
@@ -561,6 +587,7 @@ public static void main(String[] args) throws
       } else {
         while (res1.next()) {
           customer_ID = res1.getInt("ID");
+          System.out.println(customer_ID);
         }
       }
     } catch (SQLException e1) {

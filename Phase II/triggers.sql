@@ -1,4 +1,4 @@
-/*CLARK
+/*
   When a 'SALE' transaction occurs, ensure that the customer has paid
   the correct amount for that coffee type * quantity */
   CREATE OR REPLACE FUNCTION correct_amount_check()
@@ -30,28 +30,34 @@ CREATE TRIGGER sale_amount_trigger
 
 
 
-/*CLARK
-  WHEN A CUSTOMER IS INSERTED INTO THE CUSTOMER RELATION
-  THEY SHOULD THEN BE ADDED TO THE LOYALTY SYSTEM AUTOMATICALLY*/
-CREATE OR REPLACE FUNCTION loyalty_relation_assign()
+/*WHEN A CUSTOMER ADDS COFFEE FROM THE JAVA PROGRAM, ENSURE THAT
+  IT IS CONSISTENT WITH OUR SPECIFIED SCHEMA DESIGN*/
+CREATE OR REPLACE FUNCTION customer_add_coffee_assign()
 RETURNS TRIGGER AS $$
     BEGIN
-        INSERT INTO COFFEE_BOUTIQUE.loyalty_program VALUES (NEW.CUSTOMER_ID);
+        IF NEW.price <> (NEW.reward_points / 10)  THEN
+        RAISE EXCEPTION 'Reward Points must be 10x the price of coffee';
+        end if;
+
+        IF NEW.price <> (NEW.redeem_points / 100) THEN
+        RAISE EXCEPTION 'Redeem Points must be 100x the price of coffee';
+        end if;
         RETURN NEW;
+
     END;
     $$ language PLPGSQL;
 
-DROP TRIGGER IF EXISTS loyalty_assign ON COFFEE_BOUTIQUE.CUSTOMER;
-CREATE TRIGGER loyalty_assign
-    AFTER INSERT ON COFFEE_BOUTIQUE.CUSTOMER
+DROP TRIGGER IF EXISTS coffee_add ON COFFEE_BOUTIQUE.COFFEE;
+CREATE TRIGGER coffee_add
+    BEFORE INSERT ON COFFEE_BOUTIQUE.COFFEE
     FOR EACH ROW
-    EXECUTE FUNCTION loyalty_relation_assign();
+    EXECUTE FUNCTION customer_add_coffee_assign();
 
 
 
 
 
-/*CLARK
+/*
 BEFORE A SALE OCCURS WE SHOULD CHECK TO MAKE SURE THAT
 IF THE CUSTOMER IS TRYING TO REDEEM POINTS FOR A PURCHASE
 THAT THEY HAVE THE NECESSARY POINTS
@@ -94,7 +100,7 @@ CREATE TRIGGER customer_redeem_check
 
 
 
-/*CLARK
+/*
 AFTER A SALE OCCURS WE SHOULD ADD TO THE CUSTOMERS PROFILE
 THE CORRECT AMOUNT OF POINTS EARNED - POINTS CAN ONLY BE ADDED TO A
 PROFILE AFTER A TRANSACTION OCCURS
@@ -126,3 +132,6 @@ CREATE TRIGGER add_redeem_points
     FOR EACH ROW
     WHEN ( NEW.redeem_portion = 0 )
     EXECUTE FUNCTION add_points();
+
+
+
