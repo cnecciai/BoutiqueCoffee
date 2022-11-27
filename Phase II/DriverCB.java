@@ -17,7 +17,7 @@ public static void main(String[] args) throws
   String url = "jdbc:postgresql://localhost:5432/";
   Properties props = new Properties();
   props.setProperty("user", "postgres"); //cpn14
-  props.setProperty("password", "BillieBoi"); //BillieBoi#25
+  props.setProperty("password", "INSERT_PASSWORD_HERE"); //BillieBoi#25
   Connection conn = DriverManager.getConnection(url, props);
   System.out.println("Connection made to: " + conn);
   System.out.println("\n\n----Beginning Coffee Boutique Program----\n\n");
@@ -45,9 +45,9 @@ public static void main(String[] args) throws
       case 14: task_14(conn); break;
       case 15: task_15(conn); break;
       case 16: task_16(conn); break;
-      }
     }
-  } //End Main
+  }
+} //End Main
 
   //-----------------------------------
   //Query Methods ---------------------
@@ -97,6 +97,66 @@ public static void main(String[] args) throws
   };
   //Task #2
   public static void task_2(Connection conn) {
+    //Declaring Task
+    Scanner scan = new Scanner(System.in);
+    System.out.println("\n----Adding a Coffee----");
+
+    //Gets user inputs
+    System.out.print("Name: ");
+    String name = scan.nextLine();
+    System.out.print("Description: ");
+    String description = scan.nextLine();
+    System.out.print("Country of Origin: ");
+    String country = scan.nextLine();
+    System.out.print("Intensity: ");
+    String intensity = scan.nextLine();
+    System.out.print("Price: ");
+    String price = scan.nextLine();
+    System.out.print("Award Points: ");
+    String rewardPoints = scan.nextLine();
+    System.out.print("Redeem Points: ");
+    String redeemPoints = scan.nextLine();
+    System.out.println("---------------------------------------------");
+
+    //Processing Queries
+    try{
+
+      //Getting Coffee ID
+      Statement st = conn.createStatement();
+      String searchQuery = "SELECT MAX(coffee_ID) + 1 AS ID FROM COFFEE_BOUTIQUE.COFFEE";
+      ResultSet searchRes = st.executeQuery(searchQuery);
+      String coffeeID = "";
+      while (searchRes.next()){
+        coffeeID = searchRes.getString("ID");
+      }
+
+      //Create Insert Statement
+      PreparedStatement insert = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+      insert.setString(1, coffeeID);
+      insert.setString(2, name);
+      insert.setString(3, description);
+      insert.setString(4, country);
+      insert.setString(5, intensity);
+      insert.setString(6, price);
+      insert.setString(7, rewardPoints);
+      insert.setString(8, redeemPoints);
+
+      //Attempt to Insert
+      conn.setAutoCommit(false);
+      st.executeUpdate(insert.toString());
+      conn.commit();
+      System.out.println("Added to Database Successfully - CoffeID: " + coffeeID);
+    }
+    catch (SQLException e1){
+      try {
+        //System.out.println(e1.toString());
+        System.out.println("ERROR: COFFEE NOT ADDED TO DATABASE");
+        conn.rollback();
+      }
+      catch(SQLException e2){
+        System.out.println(e2.toString());
+      }
+    }
 
   };
   //Task #3
@@ -175,10 +235,68 @@ public static void main(String[] args) throws
       catch(SQLException e2) { System.out.println(e2.toString()); }
     }
   };
+
   //Task #5
   public static void task_5(Connection conn) {
+    //Presenting Choices
+    Scanner scan = new Scanner(System.in);
+    System.out.println("\n----Promotional Offers----");
+    System.out.println("(1)List All Stores with Promotions");
+    System.out.println("(2)List All Stores Promoting Specific Coffee");
+    System.out.print("Choice: ");
 
+    String choice = scan.nextLine();
+
+    switch(choice){
+      case "1":
+        //Processing Queries
+        try{
+          //Getting Coffee ID
+          Statement st = conn.createStatement();
+          String searchQuery = "SELECT store_ID, promotion_ID FROM COFFEE_BOUTIQUE.CARRIES";
+          ResultSet searchRes = st.executeQuery(searchQuery);
+          if (searchRes == null)
+            System.out.println("No stores are currently offering any promotions");
+          while(searchRes.next()){
+            //Print Results
+            System.out.println("The Store with ID " + searchRes.getString("store_ID") + " Carries Promotion: " + searchRes.getString("promotion_ID"));
+          }
+        }
+        catch (SQLException e1){
+          System.out.println(e1.toString());
+        }
+        break;
+      case "2":
+        //Gets user inputs
+        System.out.print("Coffee ID: ");
+        String coffeeID = scan.nextLine();
+
+        //Processing Queries
+        try{
+          //Getting Coffee ID
+          Statement st = conn.createStatement();
+          String searchQuery = "SELECT promotion_ID FROM COFFEE_BOUTIQUE.PROMOTES WHERE coffee_ID = " + coffeeID;
+          ResultSet searchRes = st.executeQuery(searchQuery);
+          while(searchRes.next()){
+            Statement st2 = conn.createStatement();
+            String promotionID = searchRes.getString("promotion_ID");
+            String searchQuery2 = "SELECT store_ID FROM COFFEE_BOUTIQUE.CARRIES WHERE promotion_ID = " + promotionID;
+            ResultSet searchRes2 = st2.executeQuery(searchQuery2);
+            while(searchRes2.next()){
+              System.out.println("The Store with ID " + searchRes2.getString("store_ID") + " Carries Promotion: " + promotionID + " For the Coffee with ID " + coffeeID);
+            }
+          }
+        }
+        catch (SQLException e1){
+            System.out.println(e1.toString());
+        }
+
+        break;
+      default:
+        System.out.println("Not a Valid Choice");
+    }
   };
+
   //Task #6 - X
   public static void task_6(Connection conn) throws SQLException, ClassNotFoundException {
 
@@ -360,70 +478,121 @@ public static void main(String[] args) throws
   };
   //Task #8
   public static void task_8(Connection conn) {
+    //Collecting User Input
+    Scanner scan = new Scanner(System.in);
+    System.out.println("\n----Adding/Changing Loyalty Level----");
+    System.out.println("Loyalty Level Name: ");
+    String levelName = scan.nextLine();
+    System.out.println("Booster Factor: ");
+    String boostFactor = scan.nextLine();
 
+    try{
+      //Getting List of Level Names
+      Statement st = conn.createStatement();
+      String searchQuery = "SELECT level_ID, level_name FROM COFFEE_BOUTIQUE.LOYALTY_PROGRAM";
+      ResultSet searchRes = st.executeQuery(searchQuery);
+      //Checking if Given Level Name Exists
+      boolean levelExists = false;
+      String levelID = "";
+      while(searchRes.next()){
+        if (levelName.equals(searchRes.getString("level_name"))){
+          levelExists = true;
+          levelID = searchRes.getString("level_ID");
+        }
+      }
+      if(levelExists){
+        System.out.println("----Updating Booster Factor----");
+
+        Statement st2 = conn.createStatement();
+        PreparedStatement prep_statement = conn.prepareStatement("UPDATE COFFEE_BOUTIQUE.LOYALTY_PROGRAM SET booster_factor = ? WHERE level_ID = ?");
+        prep_statement.setString(1, boostFactor);
+        prep_statement.setString(2, levelID);
+        st2.executeUpdate(prep_statement.toString());
+      }
+      else{
+        System.out.println("----Adding Loyalty Level----");
+
+        Statement st2 = conn.createStatement();
+        String maxIDQuery = "SELECT MAX(level_ID) + 1 AS ID FROM COFFEE_BOUTIQUE.LOYALTY_PROGRAM";
+        ResultSet maxID = st.executeQuery(maxIDQuery);
+        levelID = "";
+        while(maxID.next()){
+          levelID = maxID.getString("ID");
+        }
+        Statement st3 = conn.createStatement();
+        PreparedStatement prep_statement = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.LOYALTY_PROGRAM VALUES (?,?,?)");
+        prep_statement.setString(1, levelID);
+        prep_statement.setString(2, levelName);
+        prep_statement.setString(3, boostFactor);
+        st3.executeUpdate(prep_statement.toString());
+      }
+    }
+    catch (SQLException e1){
+      System.out.println(e1.toString());
+    }
   };
   //Task #9 - X
   public static void task_9(Connection conn) throws SQLException, ClassNotFoundException {
+    Scanner scan = new Scanner(System.in);
+    System.out.println("\n----Add a new Customer----\n");
+    System.out.print("First Name of Customer: ");
+    String first_name = scan.nextLine();
+    System.out.print("Last Name of Customer: ");
+    String last_name = scan.nextLine();
+    System.out.print("Middle Initial: ");
+    String middle_inital = scan.nextLine();
+    System.out.print("Day of Birth(Numerical Format - DD): ");
+    String day_of_birth = scan.nextLine();
+    System.out.print("-----------------------------------------------\nJAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC\nMonth of Birth(Options Above): ");
+    String month_of_birth = scan.nextLine();
+    System.out.print("Phone Number: ");
+    String phone_number = scan.nextLine();
+    System.out.print("--------------------\nmobile work phone other\nPhone Type(Options Above): ");
+    String phone_type = scan.nextLine();
+    Statement st = conn.createStatement();
+    String query1 = "SELECT MAX(customer_ID) + 1 AS ID FROM COFFEE_BOUTIQUE.CUSTOMER";
 
-            Scanner scan = new Scanner(System.in);
-            System.out.println("\n----Add a new Customer----\n");
-            System.out.print("First Name of Customer: ");
-            String first_name = scan.nextLine();
-            System.out.print("Last Name of Customer: ");
-            String last_name = scan.nextLine();
-            System.out.print("Middle Initial: ");
-            String middle_inital = scan.nextLine();
-            System.out.print("Day of Birth(Numerical Format - DD): ");
-            String day_of_birth = scan.nextLine();
-            System.out.print("-----------------------------------------------\nJAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC\nMonth of Birth(Options Above): ");
-            String month_of_birth = scan.nextLine();
-            System.out.print("Phone Number: ");
-            String phone_number = scan.nextLine();
-            System.out.print("--------------------\nmobile work phone other\nPhone Type(Options Above): ");
-            String phone_type = scan.nextLine();
-            Statement st = conn.createStatement();
-            String query1 = "SELECT MAX(customer_ID) + 1 AS ID FROM COFFEE_BOUTIQUE.CUSTOMER";
+    int customer_ID = 0;
+    ResultSet res1;
+    try {
+      res1 = st.executeQuery(query1);
+    if (!res1.isBeforeFirst()) {
+        customer_ID = 0;
+      } else {
+        while (res1.next()) {
+          customer_ID = res1.getInt("ID");
+        }
+      }
+    } catch (SQLException e1) {
+    while (e1 != null) {
+      System.out.println("Message = "+ e1.toString());
+      e1 = e1.getNextException();
+      }
+    }
 
-            int customer_ID = 0;
-            ResultSet res1;
-            try {
-              res1 = st.executeQuery(query1);
-            if (!res1.isBeforeFirst()) {
-                customer_ID = 0;
-              } else {
-                while (res1.next()) {
-                  customer_ID = res1.getInt("ID");
-                }
-              }
-            } catch (SQLException e1) {
-            while (e1 != null) {
-              System.out.println("Message = "+ e1.toString());
-              e1 = e1.getNextException();
-              }
-            }
+    Statement st2 = conn.createStatement();
+    PreparedStatement prep_statement = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (?,?,?,?,?,?,?,?,?,?)");
+    prep_statement.setString(1, String.valueOf(customer_ID));
+    prep_statement.setString(2, first_name);
+    prep_statement.setString(3, last_name);
+    prep_statement.setString(4, middle_inital);
+    prep_statement.setString(5, day_of_birth);
+    prep_statement.setString(6, month_of_birth);
+    prep_statement.setString(7, phone_number);
+    prep_statement.setString(8, phone_type);
+    prep_statement.setString(9, "0");
+    prep_statement.setString(10, "0");
 
-            Statement st2 = conn.createStatement();
-            PreparedStatement prep_statement = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (?,?,?,?,?,?,?,?,?)");
-            prep_statement.setString(1, String.valueOf(customer_ID));
-            prep_statement.setString(2, first_name);
-            prep_statement.setString(3, last_name);
-            prep_statement.setString(4, middle_inital);
-            prep_statement.setString(5, day_of_birth);
-            prep_statement.setString(6, month_of_birth);
-            prep_statement.setString(7, phone_number);
-            prep_statement.setString(8, phone_type);
-            prep_statement.setString(9, "0");
-
-            try {
-                st2.executeUpdate(prep_statement.toString());
-                System.out.println("New Customer ID: " + customer_ID);
-              }
-                catch (SQLException e1) {
-                  while (e1 != null) {
-                    System.out.println(e1.toString());
-                    e1 = e1.getNextException();
-                  }
-                }
+    try {
+        st2.executeUpdate(prep_statement.toString());
+        System.out.println("New Customer ID: " + customer_ID);
+      }
+        catch (SQLException e1) {
+          while (e1 != null) {
+            System.out.println(e1.toString());
+            e1 = e1.getNextException();
+          }
+        }
   };
 
   //Task #10
@@ -452,7 +621,24 @@ public static void main(String[] args) throws
   };
   //Task #11
   public static void task_11(Connection conn) {
+    //Presenting Choices
+    System.out.println("\n----Customers Ranked by Loyalty----");
 
+    //Processing Queries
+    try{
+      //Getting Coffee ID
+      Statement st = conn.createStatement();
+      String searchQuery = "SELECT first, last, middle_initial FROM COFFEE_BOUTIQUE.CUSTOMER ORDER BY loyalty_level DESC, points_earned DESC";
+      ResultSet searchRes = st.executeQuery(searchQuery);
+      int rank = 1;
+      while(searchRes.next()){
+        System.out.println(rank + ". " + searchRes.getString("first") + " " + searchRes.getString("middle_initial") + ". " + searchRes.getString("last"));
+        rank++;
+      }
+    }
+    catch (SQLException e1){
+        System.out.println(e1.toString());
+    }
   };
   //Task #12 - X
   public static void task_12(Connection conn) throws SQLException, ClassNotFoundException {
@@ -706,8 +892,47 @@ public static void main(String[] args) throws
 
   //Task #14
   public static void task_14(Connection conn) {
+    //Presenting Choices
+    Scanner scan = new Scanner(System.in);
+    System.out.println("\n----Coffee Search----");
+    System.out.print("Coffee Intensity: ");
+    String intensity = scan.nextLine();
+    System.out.print("\nKeyword 1: ");
+    String key1 = scan.nextLine().toLowerCase();
+    System.out.print("\nKeyword 2: ");
+    String key2 = scan.nextLine().toLowerCase();
+
+    try{
+      Integer.parseInt(intensity);
+    }
+    catch (Exception notAnInt){
+      System.out.println("Not a valid Intensity");
+      return;
+    }
+
+    try{
+      //Getting Coffee ID
+      Statement st = conn.createStatement();
+      String searchQuery = "SELECT coffee_ID, name FROM COFFEE_BOUTIQUE.COFFEE WHERE intensity = " + intensity;
+      ResultSet searchRes = st.executeQuery(searchQuery);
+      boolean results = false;
+      while(searchRes.next()){
+        //Print Results
+        String name = searchRes.getString("name");
+        if(name.toLowerCase().contains(key1) && name.toLowerCase().contains(key2)){
+          results = true;
+          System.out.println("\nCoffee: " + name + " ID: "+ searchRes.getString("coffee_ID"));
+        }
+      }
+      if(!results)
+        System.out.println("No Coffee satisfies these conditions");
+    }
+    catch (SQLException e1){
+        System.out.println(e1.toString());
+    }
 
   };
+
   //Task #15
   public static void task_15(Connection conn) {
 

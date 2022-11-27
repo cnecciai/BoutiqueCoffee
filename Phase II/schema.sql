@@ -57,6 +57,14 @@ CREATE DOMAIN COFFEE_BOUTIQUE.months AS varchar(3)
 CREATE DOMAIN COFFEE_BOUTIQUE.phone_enum AS varchar(6)
     CHECK ( (VALUE IN ('home', 'mobile', 'work', 'other')) );
 
+CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.LOYALTY_PROGRAM(
+    level_ID integer not null,
+    level_name varchar(10),
+    booster_factor float NOT NULL DEFAULT 1,
+
+    CONSTRAINT PK_LOYALTY_PROGRAM PRIMARY KEY (level_ID)
+);
+
 CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.CUSTOMER(
     customer_ID integer,
     first varchar(50) NOT NULL,
@@ -68,26 +76,18 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.CUSTOMER(
     phone_type COFFEE_BOUTIQUE.phone_enum NOT NULL,
     points_earned float NOT NULL DEFAULT 0
         CHECK ( points_earned >= 0 ),
+    loyalty_level integer,
+    CONSTRAINT PK_CUSTOMER PRIMARY KEY(customer_ID),
 
-    CONSTRAINT PK_CUSTOMER PRIMARY KEY(customer_ID)
-
+    CONSTRAINT FK_CUSTOMER FOREIGN KEY(loyalty_level) REFERENCES COFFEE_BOUTIQUE.LOYALTY_PROGRAM (level_id)
+        ON UPDATE CASCADE ON DELETE NO ACTION
     );
 
-CREATE DOMAIN COFFEE_BOUTIQUE.loyalty_level AS varchar(10)
-    CHECK ( (VALUE IN ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond')) );
+--CREATE DOMAIN COFFEE_BOUTIQUE.loyalty_level AS varchar(10)
+   --CHECK ( (VALUE IN ('basic', 'bronze', 'silver', 'gold', 'platinum', 'diamond')) );
 
 
-CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.LOYALTY_PROGRAM(
-    customer_ID integer,
-    level COFFEE_BOUTIQUE.loyalty_level NOT NULL DEFAULT 'basic',
-    booster_factor float NOT NULL DEFAULT 1,
 
-    CONSTRAINT PK_LOYALTY_PROGRAM PRIMARY KEY (customer_ID),
-
-    FOREIGN KEY (customer_ID) REFERENCES COFFEE_BOUTIQUE.CUSTOMER(customer_ID)
-        ON UPDATE CASCADE ON DELETE NO ACTION
-
-);
 
 
 CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.SALE(
@@ -152,5 +152,4 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.CARRIES(
         ON UPDATE CASCADE ON DELETE CASCADE
 
     );
-
 
