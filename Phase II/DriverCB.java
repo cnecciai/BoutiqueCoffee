@@ -955,11 +955,19 @@ public static void main(String[] args) throws
 
   //Task #15
   public static void task_15(Connection conn) {
-
+    // "SELECT Store_ID, SUM(purchase_portion + redeem_portion) AS Revenue 
+    // FROM COFFEE_BOUTIQUE.SALE 
+    // WHERE time > " + min_date + 
+    // "GROUP BY Store_ID 
+    // ORDER BY Revenue DESC"
   };
   //Task #16
   public static void task_16(Connection conn) {
-
+    // "SELECT Store_ID, SUM(purchase_portion + redeem_portion) AS Revenue 
+    // FROM COFFEE_BOUTIQUE.SALE 
+    // WHERE time > " + min_date + 
+    // "GROUP BY Customer_ID 
+    // ORDER BY Revenue DESC"
   };
 
   //-----------------------------------
