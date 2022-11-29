@@ -155,5 +155,5 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.CLOCK(
 
 INSERT INTO COFFEE_BOUTIQUE.CLOCK VALUES ('09-01-22');
 
-SELECT p_date - purchase_time::date
-    FROM coffee_boutique.SALE, coffee_boutique.CLOCK;
+/*SELECT p_date - purchase_time::date
+    FROM coffee_boutique.SALE, coffee_boutique.CLOCK;*/
