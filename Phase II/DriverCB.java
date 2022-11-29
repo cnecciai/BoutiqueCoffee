@@ -5,10 +5,7 @@ javac -cp "postgresql-42.5.0.jar;." DriverCB.java
 java -cp "postgresql-42.5.0.jar;." DriverCB
 
 For proper program function, loyalty levels must first be inserted then tasks
-can be performed
-
-
-*/
+can be performed */
 import java.util.Scanner;
 import java.util.Properties;
 import java.sql.*;
@@ -83,7 +80,6 @@ public static void main(String[] args) throws
           storeID = "0";
         }
       }
-      System.out.println(storeID);
       // prepare statement
       PreparedStatement stmt = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.STORE VALUES (?, ?, ?, ?, ?)");
       stmt.setString(1, storeID);
@@ -104,6 +100,7 @@ public static void main(String[] args) throws
       catch(SQLException e2) { System.out.println(e2.toString()); }
     }
   };
+
   //Task #2
   /*To maintain consistency with our schema setup, the reward points must be 10x
   the price of a coffee and the redeem_points must be 100x the price of a coffee
@@ -174,6 +171,7 @@ public static void main(String[] args) throws
     }
 
   };
+
   //Task #3
   public static void task_3(Connection conn) throws SQLException, ClassNotFoundException {
 
@@ -203,7 +201,6 @@ public static void main(String[] args) throws
           }
       }
     }
-    System.out.println(promotion_ID);
     System.out.println("---------------------------------------------");
     PreparedStatement prep_statement = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.PROMOTION VALUES (?,?,?,?)");
     prep_statement.setString(1, promotion_ID);
@@ -320,7 +317,7 @@ public static void main(String[] args) throws
     }
   };
 
-  //Task #6 - X
+  //Task #6
   public static void task_6(Connection conn) throws SQLException, ClassNotFoundException {
 
       System.out.println("\n----Promotional Offers----\n");
@@ -435,9 +432,6 @@ public static void main(String[] args) throws
                 System.out.println("No stores to list.");
                 return;
             }
-            /*while(result.next()) {
-                System.out.println("Closest Store: " + result.getString("name") + ", distance: " + result.getString("distance"));
-            }*/
             result.next();
             System.out.println("Closest Store: " + result.getString("name"));
             // if there is a tie, print all stores that are tied.
@@ -476,9 +470,7 @@ public static void main(String[] args) throws
                 System.out.println("No stores to list.");
                 return;
             }
-            /*while(result.next()) {
-                System.out.println("Closest Store: " + result.getString("name") + ", distance: " + result.getString("distance"));
-            }*/
+
             result.next();
             System.out.println("Closest Store: " + result.getString("name"));
             // if there is a tie, print all stores that are tied.
@@ -499,6 +491,7 @@ public static void main(String[] args) throws
       return;
     }
   };
+
   //Task #8
   public static void task_8(Connection conn) {
     //Collecting User Input
@@ -557,7 +550,8 @@ public static void main(String[] args) throws
       System.out.println(e1.toString());
     }
   };
-  //Task #9 - X
+
+  //Task #9
   public static void task_9(Connection conn) throws SQLException, ClassNotFoundException {
     Scanner scan = new Scanner(System.in);
     System.out.println("\n----Add a new Customer----\n");
@@ -587,7 +581,6 @@ public static void main(String[] args) throws
       } else {
         while (res1.next()) {
           customer_ID = res1.getInt("ID");
-          System.out.println(customer_ID);
         }
       }
     } catch (SQLException e1) {
@@ -646,6 +639,7 @@ public static void main(String[] args) throws
       System.out.println(loyaltyPoints + " points");
     } catch (SQLException e1) { System.out.println("ERROR: COULD NOT FETCH LOYALTY POINTS"); }
   };
+
   //Task #11
   public static void task_11(Connection conn) {
     //Presenting Choices
@@ -667,7 +661,8 @@ public static void main(String[] args) throws
         System.out.println(e1.toString());
     }
   };
-  //Task #12 - X
+
+  //Task #12
   public static void task_12(Connection conn) throws SQLException, ClassNotFoundException {
 
     Scanner scan = new Scanner(System.in);
@@ -749,8 +744,6 @@ public static void main(String[] args) throws
               }
             }
           }
-    //System.out.println("Cost of coffee type: " + cost_of_coffee_type[0]);
-    //System.out.println("Total Points Needed: " + total_points_needed_to_redeem);
 
     /*Check to see if the customer has enough points */
     Statement st2 = conn.createStatement();
@@ -777,7 +770,6 @@ public static void main(String[] args) throws
     if (customer_points < total_points_needed_to_redeem) {
       System.out.println("This customer doesn't have enough points to redeem the coffees!");
     }
-    //System.out.println("Customer has: " + customer_points);
 
     //Get maximum sale_ID from COFFEE_BOUTIQUE.sale
     Statement st_3 = conn.createStatement();
@@ -850,7 +842,8 @@ public static void main(String[] args) throws
           }
         }
   }
-  //Task #13 - X
+
+  //Task #13
   public static void task_13(Connection conn) throws SQLException, ClassNotFoundException {
 
     Scanner scan = new Scanner(System.in);
