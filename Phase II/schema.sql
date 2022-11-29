@@ -1,11 +1,7 @@
 --- TEAM NAME: CARPE DATA
 --- TEAM MEMBERS: CLARK, DHARMA, DANIEL
---- Phase #1
+--- Phase #1 - Resubmission
 ---CREATE SCHEMA
-
-/*For proper program function, loyalty levels must first be inserted then tasks
-can be performed*/
-
 
 DROP SCHEMA IF EXISTS COFFEE_BOUTIQUE CASCADE ;
 CREATE SCHEMA IF NOT EXISTS COFFEE_BOUTIQUE;
@@ -96,7 +92,7 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.SALE(
     coffee_ID integer,
     quantity integer NOT NULL DEFAULT 1
         CHECK ( quantity >= 1 ),
-    purchase_time time NOT NULL,
+    purchase_time timestamp NOT NULL,
     purchase_portion float NOT NULL,
     redeem_portion float NOT NULL DEFAULT 0,
 
@@ -152,3 +148,12 @@ CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.CARRIES(
 
     );
 
+
+CREATE TABLE IF NOT EXISTS COFFEE_BOUTIQUE.CLOCK(
+    p_date date
+);
+
+INSERT INTO COFFEE_BOUTIQUE.CLOCK VALUES ('09-01-22');
+
+SELECT p_date - purchase_time::date
+    FROM coffee_boutique.SALE, coffee_boutique.CLOCK;
