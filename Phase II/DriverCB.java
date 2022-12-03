@@ -19,7 +19,7 @@ public static void main(String[] args) throws
   String url = "jdbc:postgresql://localhost:5432/";
   Properties props = new Properties();
   props.setProperty("user", "postgres"); //cpn14
-  props.setProperty("password", "BillieBoi"); //BillieBoi#25
+  props.setProperty("password", "Dp3008395"); //BillieBoi#25
   Connection conn = DriverManager.getConnection(url, props);
   System.out.println("Connection made to: " + conn);
   System.out.println("\n\n----Beginning Coffee Boutique Program----\n\n");
@@ -955,19 +955,140 @@ public static void main(String[] args) throws
 
   //Task #15
   public static void task_15(Connection conn) {
-    // "SELECT Store_ID, SUM(purchase_portion + redeem_portion) AS Revenue 
-    // FROM COFFEE_BOUTIQUE.SALE 
-    // WHERE time > " + min_date + 
-    // "GROUP BY Store_ID 
-    // ORDER BY Revenue DESC"
+    Scanner scan = new Scanner(System.in);
+    System.out.println("\n----Listing Top Stores----\n");
+    System.out.print("Number of Stores to Display: ");
+    String k = scan.nextLine();
+    System.out.print("\nNumber of Months back: ");
+    String x = scan.nextLine();
+    System.out.println();
+
+    int places = 0;
+    int inDays = 0;
+
+    try{
+      places = Integer.parseInt(k);
+      inDays = Integer.parseInt(x) * 30;
+    }
+    catch (Exception notAnInt){
+      System.out.println("Not valid Numbers");
+      return;
+    }
+
+    try{
+      //Getting Current Time
+      Statement st = conn.createStatement();
+      String timeQuery = "SELECT p_date " + "- " + inDays + "AS min_date FROM COFFEE_BOUTIQUE.CLOCK";
+      ResultSet timeRes = st.executeQuery(timeQuery);
+      timeRes.next();
+      String min_date = timeRes.getString("min_date");
+
+      //Getting Results
+      Statement st2 = conn.createStatement();
+      String searchQuery = "SELECT Store_ID, SUM(purchase_portion + redeem_portion) AS Revenue FROM COFFEE_BOUTIQUE.SALE WHERE purchase_time > '" + min_date + "' GROUP BY Store_ID ORDER BY Revenue DESC";
+      ResultSet searchRes = st2.executeQuery(searchQuery);
+
+      String prevRev = ""; //the previous revenue value
+      int consec = 1; //# of consecutive stores with the same revenue
+      for(int i=0; i<places; i++){
+        if(!searchRes.next())
+          break;
+        String storeID = searchRes.getString("Store_ID");
+        String revenue = searchRes.getString("Revenue");
+        int place = i;
+        if (revenue.equals(prevRev)){
+          place -= consec;
+          consec++;
+        }
+        else
+          consec = 1;
+        System.out.println((place+1) + ". Store ID: " + storeID + " Revenue: $" + revenue);
+        prevRev = revenue;
+      }
+      while(searchRes.next()){
+        String revenue = searchRes.getString("Revenue");
+        String storeID = searchRes.getString("Store_ID");
+        if(!revenue.equals(prevRev)){
+          break;
+        }
+        else{
+          System.out.println(places + ". Store ID: " + storeID + " Revenue: $" + revenue);
+        }
+      }
+    }
+    catch (SQLException e1){
+        System.out.println(e1.toString());
+    }
+
+    
   };
   //Task #16
   public static void task_16(Connection conn) {
-    // "SELECT Store_ID, SUM(purchase_portion + redeem_portion) AS Revenue 
-    // FROM COFFEE_BOUTIQUE.SALE 
-    // WHERE time > " + min_date + 
-    // "GROUP BY Customer_ID 
-    // ORDER BY Revenue DESC"
+     Scanner scan = new Scanner(System.in);
+    System.out.println("\n----Listing Top Customers----\n");
+    System.out.print("Number of Customers to Display: ");
+    String k = scan.nextLine();
+    System.out.print("\nNumber of Months back: ");
+    String x = scan.nextLine();
+    System.out.println();
+
+    int places = 0;
+    int inDays = 0;
+
+    try{
+      places = Integer.parseInt(k);
+      inDays = Integer.parseInt(x) * 30;
+    }
+    catch (Exception notAnInt){
+      System.out.println("Not valid Numbers");
+      return;
+    }
+
+    try{
+      //Getting Current Time
+      Statement st = conn.createStatement();
+      String timeQuery = "SELECT p_date " + "- " + inDays + "AS min_date FROM COFFEE_BOUTIQUE.CLOCK";
+      ResultSet timeRes = st.executeQuery(timeQuery);
+      timeRes.next();
+      String min_date = timeRes.getString("min_date");
+
+      //Getting Results
+      Statement st2 = conn.createStatement();
+      String searchQuery = "SELECT Customer_ID, SUM(purchase_portion + redeem_portion) AS Revenue FROM COFFEE_BOUTIQUE.SALE WHERE purchase_time > '" + min_date + "' GROUP BY customer_ID ORDER BY Revenue DESC";
+      ResultSet searchRes = st2.executeQuery(searchQuery);
+
+      String prevRev = ""; //the previous revenue value
+      int consec = 1; //# of consecutive stores with the same revenue
+      for(int i=0; i<places; i++){
+        if(!searchRes.next())
+          break;
+        String custID = searchRes.getString("Customer_ID");
+        String revenue = searchRes.getString("Revenue");
+        int place = i;
+        if (revenue.equals(prevRev)){
+          place -= consec;
+          consec++;
+        }
+        else
+          consec = 1;
+        System.out.println((place+1) + ". Customer ID: " + custID + " Revenue: $" + revenue);
+        prevRev = revenue;
+      }
+      while(searchRes.next()){
+        String revenue = searchRes.getString("Revenue");
+        String custID = searchRes.getString("Customer_ID");
+        if(!revenue.equals(prevRev)){
+          break;
+        }
+        else{
+          System.out.println(places + ". Customer ID: " + custID + " Revenue: $" + revenue);
+        }
+      }
+    }
+    catch (SQLException e1){
+        System.out.println(e1.toString());
+    }
+
   };
 
   //-----------------------------------
