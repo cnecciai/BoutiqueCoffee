@@ -20,7 +20,7 @@ import java.util.Scanner;
 import java.util.Properties;
 import java.sql.*;
 
-public class DriverCB {
+public class BoutiqueCoffee {
 public static void main(String[] args) throws
         SQLException, ClassNotFoundException {
 
