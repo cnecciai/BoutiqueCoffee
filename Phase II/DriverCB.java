@@ -1,11 +1,21 @@
 
 /*
+Quick Copy/Paster in Terminal for Team Carpe Data
 cd C:\Users\clark\OneDrive\Desktop\CS1555\BoutiqueCoffee\Phase II
-javac -cp "postgresql-42.5.0.jar;." DriverCB.java
+javac -cp "postgresql-42.5.0.jar;." JavaDemo.java
 java -cp "postgresql-42.5.0.jar;." DriverCB
 
-For proper program function, loyalty levels must first be inserted then tasks
-can be performed */
+---Notes to grader/tester---
+
+Program Operation -
+-At a minimum, loyalty levels should first be inserted.
+-Full Program Functionality when sample-data postgresql file run.
+-Feel free to run application with username/password below.
+
+
+Run schema.sql, triggers.sql, then sample-data.sql for testing
+
+*/
 import java.util.Scanner;
 import java.util.Properties;
 import java.sql.*;
@@ -19,7 +29,7 @@ public static void main(String[] args) throws
   String url = "jdbc:postgresql://localhost:5432/";
   Properties props = new Properties();
   props.setProperty("user", "postgres"); //cpn14
-  props.setProperty("password", "Dp3008395"); //BillieBoi#25
+  props.setProperty("password", "BillieBoi"); //BillieBoi - Dp3008395
   Connection conn = DriverManager.getConnection(url, props);
   System.out.println("Connection made to: " + conn);
   System.out.println("\n\n----Beginning Coffee Boutique Program----\n\n");
@@ -1020,8 +1030,9 @@ public static void main(String[] args) throws
         System.out.println(e1.toString());
     }
 
-    
+
   };
+
   //Task #16
   public static void task_16(Connection conn) {
      Scanner scan = new Scanner(System.in);
@@ -1090,10 +1101,6 @@ public static void main(String[] args) throws
     }
 
   };
-
-  //-----------------------------------
-  //-----------------------------------
-  //-----------------------------------
 
   // Helper Methods
   public static void input_check(int input) {

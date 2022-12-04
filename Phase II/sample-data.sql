@@ -6,6 +6,8 @@ Clark, Daniel, Dharma
 ---------------------- Sample Data ----------------------
 ---------------------------------------------------------
 
+/*All sample data can be run prior/during Java program execution*/
+
 -------------------3 stores-------------------
 INSERT INTO COFFEE_BOUTIQUE.STORE VALUES (1, 'Coffee_store#1', 'sitting', 123.456, 654.321);
 INSERT INTO COFFEE_BOUTIQUE.STORE VALUES (2, 'Coffee_store#2', 'kiosk', 010.999, 101.555);
