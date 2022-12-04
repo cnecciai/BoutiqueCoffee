@@ -2,8 +2,8 @@
 /*
 Quick Copy/Paster in Terminal for Team Carpe Data
 cd C:\Users\clark\OneDrive\Desktop\CS1555\BoutiqueCoffee\Phase II
-javac -cp "postgresql-42.5.0.jar;." JavaDemo.java
-java -cp "postgresql-42.5.0.jar;." DriverCB
+javac -cp "postgresql-42.5.0.jar;." BoutiqueCoffee.java
+java -cp "postgresql-42.5.0.jar;." BoutiqueCoffee
 
 ---Notes to grader/tester---
 
@@ -681,7 +681,7 @@ public static void main(String[] args) throws
     String customer = scan.nextLine();
     System.out.print("Enter Store ID: ");
     String store = scan.nextLine();
-    System.out.print("Enter time of purchase (format: HH:SS): ");
+    System.out.print("Enter time of purchase (format: YYYY-MM-DD HH:MM:SS): ");
     String timepurchase = scan.nextLine();
     System.out.print("How many different types of coffees: ");
     int numberOfTypes = scan.nextInt(); scan.nextLine();
