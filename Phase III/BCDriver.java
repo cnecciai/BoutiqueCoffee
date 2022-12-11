@@ -1,6 +1,6 @@
 /*
 cd C:\Users\clark\OneDrive\Desktop\CS1555\BoutiqueCoffee\Phase III
-javac -cp "postgresql-42.5.0.jar;." BCDriver.java
+javac -cp "postgresql-42.5.0.jar;." BCDriver.java &&
 java -cp "postgresql-42.5.0.jar;." BCDriver
 */
 import java.util.Scanner;
@@ -52,24 +52,18 @@ public static void main(String[] args) throws
   System.out.println("\n");
 
   //Task #5 - List all stores with promotions - x
-  System.out.print("Press enter to begin testing task#5...");
-  inp = cont.nextLine();
-  task_5(conn);
+  System.out.print("Press enter to begin testing task#5...\n");
   task_5(conn);
   System.out.println();
 
   //Task #6 - Check if store has promotions - both options -
   System.out.print("Press enter to begin testing task#6...");
-  inp = cont.nextLine();
-  task_6(conn);
   task_6(conn);
   System.out.println();
 
   //Task#7
   //Task #7 - Check for closest store -
   System.out.print("Press enter to begin testing task#7...");
-  inp = cont.nextLine();
-  task_7(conn);
   task_7(conn);
   System.out.println();
 
@@ -414,9 +408,58 @@ public static void main(String[] args) throws
     Scanner scan = new Scanner(System.in);
     System.out.println("\n----Promotional Offers----");
     System.out.println("(1)List All Stores with Promotions");
+
+    String choice = "1";
+    switch(choice){
+      case "1":
+        //Processing Queries
+        try{
+          //Getting Coffee ID
+          Statement st = conn.createStatement();
+          String searchQuery = "SELECT store_ID, promotion_ID FROM COFFEE_BOUTIQUE.CARRIES";
+          ResultSet searchRes = st.executeQuery(searchQuery);
+          if (searchRes == null)
+            System.out.println("No stores are currently offering any promotions");
+          while(searchRes.next()){
+            //Print Results
+            System.out.println("The Store with ID: " + searchRes.getString("store_ID") + " carries Promotion: " + searchRes.getString("promotion_ID"));
+          }
+        }
+        catch (SQLException e1){
+          System.out.println(e1.toString());
+        }
+        break;
+      case "2":
+        //Gets user inputs
+        String coffeeID = "0";
+        //Processing Queries
+        try{
+          //Getting Coffee ID
+          Statement st = conn.createStatement();
+          String searchQuery = "SELECT promotion_ID FROM COFFEE_BOUTIQUE.PROMOTES WHERE coffee_ID = " + coffeeID;
+          ResultSet searchRes = st.executeQuery(searchQuery);
+          while(searchRes.next()){
+            Statement st2 = conn.createStatement();
+            String promotionID = searchRes.getString("promotion_ID");
+            String searchQuery2 = "SELECT store_ID FROM COFFEE_BOUTIQUE.CARRIES WHERE promotion_ID = " + promotionID;
+            ResultSet searchRes2 = st2.executeQuery(searchQuery2);
+            while(searchRes2.next()){
+              System.out.println("The Store with ID: " + searchRes2.getString("store_ID") + " carries Promotion: " + promotionID + " for the Coffee with ID " + coffeeID);
+            }
+          }
+        }
+        catch (SQLException e1){
+            System.out.println(e1.toString());
+        }
+
+        break;
+      default:
+        System.out.println("Not a Valid Choice");
+    }
+
+    System.out.println("\n----Promotional Offers----");
     System.out.println("(2)List All Stores Promoting Specific Coffee");
-    System.out.print("Choice: ");
-    String choice = scan.nextLine();
+    choice = "2";
     switch(choice){
       case "1":
         //Processing Queries
@@ -470,9 +513,6 @@ public static void main(String[] args) throws
 
       System.out.println("\n----Promotional Offers----\n");
       System.out.println("(1) - List all promotional offers for a store");
-      System.out.println("(2) - Offers on a specific coffee at a store");
-      System.out.print("Choice: ");
-
       String store = "";
       String coffee = "";
       String rpromotion_ID = "";
@@ -482,7 +522,7 @@ public static void main(String[] args) throws
       ResultSet res1;
 
       Scanner scan = new Scanner(System.in);
-      String choice = scan.nextLine();
+      String choice = "1";
 
       if (choice.equals("1")) {
         store = "0";
@@ -545,16 +585,95 @@ public static void main(String[] args) throws
         System.out.println("ERROR: CHOOSE EITHER 1 OR 2");
         return;
       }
+
+
+
+
+        System.out.println("\n----Promotional Offers----\n");
+        System.out.println("(2) - Offers on a specific coffee at a store");
+        System.out.print("Choice: ");
+
+        store = "";
+        coffee = "";
+        rpromotion_ID = "";
+        rstore_ID = "";
+        rcoffee = "";
+        rpromotion_name = "";
+
+
+
+        choice = "2";
+
+        if (choice.equals("1")) {
+          store = "0";
+          Statement st = conn.createStatement();
+          PreparedStatement prep_statement = conn.prepareStatement("SELECT * FROM COFFEE_BOUTIQUE.CARRIES INNER JOIN COFFEE_BOUTIQUE.PROMOTION ON store_ID = ?");
+          prep_statement.setString(1, store);
+
+          try {
+              res1 = st.executeQuery(prep_statement.toString());
+              if (!res1.isBeforeFirst()) {
+                System.out.println("No promotions are currently offered at this store");
+                return;
+              }
+              System.out.println("QUERY SUCCESSFULL");
+              System.out.println("-----------------");
+              System.out.println("Promotion Name");
+              System.out.println("-----------------------");
+              while (res1.next()) {
+                rpromotion_name = res1.getString("name");
+                System.out.println( rpromotion_name);
+                }
+            }
+              catch (SQLException e1) {
+                while (e1 != null) {
+                  System.out.println("Message = "+ e1.toString());
+                  e1 = e1.getNextException();
+                  }
+              }
+
+        } else if (choice.equals("2")) {
+          store = "0";
+          coffee = "0";
+          Statement st = conn.createStatement();
+          PreparedStatement prep_statement = conn.prepareStatement(" SELECT * FROM COFFEE_BOUTIQUE.PROMOTES JOIN COFFEE_BOUTIQUE.CARRIES USING(promotion_ID) JOIN COFFEE_BOUTIQUE.PROMOTION USING(promotion_ID) WHERE store_ID = ? and coffee_id = ? ");
+          prep_statement.setString(1, store);
+          prep_statement.setString(2, coffee);
+          try {
+              res1 = st.executeQuery(prep_statement.toString());
+              if (!res1.isBeforeFirst()) {
+                System.out.println("No promotions for this coffee are currently offered at this store");
+                return;
+              }
+              System.out.println("QUERY SUCCESSFULL");
+              System.out.println("-----------------");
+              System.out.println("Promotion_ID | Promotion Name");
+              System.out.println("-----------------------");
+              while (res1.next()) {
+                rpromotion_ID = res1.getString("promotion_ID");
+                rpromotion_name = res1.getString("name");
+                System.out.println("           "+ rpromotion_ID + " | " + rpromotion_name);
+                }
+              }
+              catch (SQLException e1) {
+                while (e1 != null) {
+                  System.out.println("Message = "+ e1.toString());
+                  e1 = e1.getNextException();
+                  }
+              }
+        } else /*error*/ {
+          System.out.println("ERROR: CHOOSE EITHER 1 OR 2");
+          return;
+        }
   };
 
   //Task #7
   public static void task_7(Connection conn) {
     Scanner scan = new Scanner(System.in);
+
     System.out.println("\n----Finding Closest Stores----\n");
     System.out.println("(1) - Find any closest store");
-    System.out.println("(2) - Find closest store with specific promotion");
-    System.out.print("Choice: ");
-    String choice = scan.nextLine();
+    String choice = "1";
 
     // any closest store
     if (choice.equals("1")) {
@@ -562,7 +681,7 @@ public static void main(String[] args) throws
       String gpsLat = "75000.0";
       String gpsLong = "10000.0";
 
-      System.out.println("Checking Lat:10000 and Long:75000");
+      System.out.println("Checking Lat:75000 and Long:10000");
       // get stores sorted by distance
         try {
             Statement st = conn.createStatement();
@@ -662,6 +781,125 @@ public static void main(String[] args) throws
       System.out.println("ERROR: CHOOSE EITHER 1 OR 2");
       return;
     }
+
+
+
+
+
+    System.out.println("\n----Finding Closest Stores----\n");
+    System.out.println("(2) - Find closest store with specific promotion");
+    System.out.print("Choice: ");
+    choice = "2";
+
+    // any closest store
+    if (choice.equals("1")) {
+      // get user input
+      String gpsLat = "75000.0";
+      String gpsLong = "10000.0";
+
+      System.out.println("Checking Lat:75000 and Long:10000");
+      // get stores sorted by distance
+        try {
+            Statement st = conn.createStatement();
+            PreparedStatement stmt = conn.prepareStatement(" SELECT name, SQRT((gps_lat - ?)^2 + (gps_long - ?)^2) AS distance FROM COFFEE_BOUTIQUE.STORE ORDER BY distance");
+            stmt.setString(1, gpsLat);
+            stmt.setString(2, gpsLong);
+            ResultSet result = st.executeQuery(stmt.toString());
+            // print the closest store.
+            if (!result.isBeforeFirst()) {
+                System.out.println("No stores to list.");
+                return;
+            }
+            result.next();
+            System.out.println("Closest Store: " + result.getString("name"));
+            // if there is a tie, print all stores that are tied.
+            float minDist = result.getFloat("distance");
+            float eps = 0.0000001f;
+            while(result.next() && Math.abs(result.getFloat("distance") - minDist) < eps) {
+                System.out.println("Closest Store: " + result.getString("name"));
+            }
+        } catch (SQLException e1) {
+            while (e1 != null) {
+                System.out.println("Message = "+ e1.toString());
+                e1 = e1.getNextException();
+            }
+        }
+        // get user input
+        String gpsLat2 = "0.0";
+        String gpsLong2 = "0.0";
+
+        System.out.println("Checking Lat:0 and Long:0");
+        // get stores sorted by distance
+          try {
+              Statement st2 = conn.createStatement();
+              PreparedStatement stmt2 = conn.prepareStatement(" SELECT name, SQRT((gps_lat - ?)^2 + (gps_long - ?)^2) AS distance FROM COFFEE_BOUTIQUE.STORE ORDER BY distance");
+              stmt2.setString(1, gpsLat2);
+              stmt2.setString(2, gpsLong2);
+              ResultSet result2 = st2.executeQuery(stmt2.toString());
+              // print the closest store.
+              if (!result2.isBeforeFirst()) {
+                  System.out.println("No stores to list.");
+                  return;
+              }
+              result2.next();
+              System.out.println("Closest Store: " + result2.getString("name"));
+              // if there is a tie, print all stores that are tied.
+              float minDist2 = result2.getFloat("distance");
+              float eps2 = 0.0000001f;
+              while(result2.next() && Math.abs(result2.getFloat("distance") - minDist2) < eps2) {
+                  System.out.println("Closest Store: " + result2.getString("name"));
+              }
+          } catch (SQLException e1) {
+              while (e1 != null) {
+                  System.out.println("Message = "+ e1.toString());
+                  e1 = e1.getNextException();
+              }
+          }
+    }
+    // closest store with promotion
+    else if (choice.equals("2")) {
+      // get user input
+      System.out.println("Checking with Lat:75000, Long:10000, and promotion ID: 0");
+      String gpsLat = "75000.0";
+      String gpsLong = "10000.0";
+      String promotionID = "0";
+        // get stores sorted by distance
+        try {
+            Statement st = conn.createStatement();
+            PreparedStatement stmt = conn.prepareStatement(" SELECT COFFEE_BOUTIQUE.STORE.name, SQRT((gps_lat - ?)^2 + (gps_long - ?)^2) AS distance FROM COFFEE_BOUTIQUE.CARRIES NATURAL JOIN COFFEE_BOUTIQUE.STORE WHERE promotion_id = ? ORDER BY distance");
+            stmt.setString(1, gpsLat);
+            stmt.setString(2, gpsLong);
+            stmt.setString(3, promotionID);
+            ResultSet result = st.executeQuery(stmt.toString());
+            // print the closest store.
+            System.out.println("---------------------------------------------");
+            if (!result.isBeforeFirst()) {
+                System.out.println("No stores to list.");
+                return;
+            }
+
+            result.next();
+            System.out.println("Closest Store: " + result.getString("name"));
+            // if there is a tie, print all stores that are tied.
+            float minDist = result.getFloat("distance");
+            float eps = 0.0000001f;
+            while(result.next() && Math.abs(result.getFloat("distance") - minDist) < eps) {
+                System.out.println("Closest Store: " + result.getString("name"));
+            }
+        } catch (SQLException e1) {
+            while (e1 != null) {
+                System.out.println("Message = "+ e1.toString());
+                e1 = e1.getNextException();
+            }
+        }
+    }
+    else {
+      System.out.println("ERROR: CHOOSE EITHER 1 OR 2");
+      return;
+    }
+
+
+
   };
 
   //Task #8
@@ -1531,7 +1769,8 @@ public static void main(String[] args) throws
         }
         else
           consec = 1;
-        System.out.println((place+1) + ". Store ID: " + storeID + " Revenue: $" + revenue);
+        System.out.print((place+1) + ". Store ID: " + storeID + " Revenue: $"); System.out.printf("%.2f", Float.parseFloat(revenue));
+        System.out.println("");
         prevRev = revenue;
       }
       while(searchRes.next()){
@@ -1541,7 +1780,8 @@ public static void main(String[] args) throws
           break;
         }
         else{
-          System.out.println(places + ". Store ID: " + storeID + " Revenue: $" + revenue);
+          System.out.print(places + ". Store ID: " + storeID + " Revenue: $"); System.out.printf("%.2f", Float.parseFloat(revenue));
+          System.out.println();
         }
       }
     }
@@ -1594,7 +1834,7 @@ public static void main(String[] args) throws
         }
         else
           consec = 1;
-        System.out.println((place+1) + ". Store ID: " + storeID + " Revenue: $" + revenue);
+        System.out.print((place+1) + ". Store ID: " + storeID + " Revenue: $"); System.out.printf("%.2f", Float.parseFloat(revenue)); System.out.println();
         prevRev = revenue;
       }
       while(searchRes.next()){
@@ -1604,7 +1844,7 @@ public static void main(String[] args) throws
           break;
         }
         else{
-          System.out.println(places + ". Store ID: " + storeID + " Revenue: $" + revenue);
+          System.out.print(places + ". Store ID: " + storeID + " Revenue: $"); System.out.printf("%.2f",  Float.parseFloat(revenue)); System.out.println();
         }
       }
     }
@@ -1662,7 +1902,7 @@ public static void main(String[] args) throws
         }
         else
           consec = 1;
-        System.out.println((place+1) + ". Customer ID: " + custID + " Revenue: $" + revenue);
+        System.out.print((place+1) + ". Customer ID: " + custID + " Revenue: $"); System.out.printf("%.2f",  Float.parseFloat(revenue)); System.out.println();
         prevRev = revenue;
       }
       while(searchRes.next()){
@@ -1672,7 +1912,7 @@ public static void main(String[] args) throws
           break;
         }
         else{
-          System.out.println(places + ". Customer ID: " + custID + " Revenue: $" + revenue);
+          System.out.print(places + ". Customer ID: " + custID + " Revenue: $"); System.out.printf("%.2f", Float.parseFloat(revenue));System.out.println();
         }
       }
     }
@@ -1725,7 +1965,7 @@ public static void main(String[] args) throws
         }
         else
           consec = 1;
-        System.out.println((place+1) + ". Customer ID: " + custID + " Revenue: $" + revenue);
+        System.out.print((place+1) + ". Customer ID: " + custID + " Revenue: $");  System.out.printf("%.2f", Float.parseFloat(revenue));System.out.println();
         prevRev = revenue;
       }
       while(searchRes.next()){
@@ -1735,7 +1975,7 @@ public static void main(String[] args) throws
           break;
         }
         else{
-          System.out.println(places + ". Customer ID: " + custID + " Revenue: $" + revenue);
+          System.out.print(places + ". Customer ID: " + custID + " Revenue: $");  System.out.printf("%.2f", Float.parseFloat(revenue));System.out.println();
         }
       }
     }

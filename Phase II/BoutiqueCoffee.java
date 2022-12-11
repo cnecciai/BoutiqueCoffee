@@ -1012,7 +1012,8 @@ public static void main(String[] args) throws
         }
         else
           consec = 1;
-        System.out.println((place+1) + ". Store ID: " + storeID + " Revenue: $" + revenue);
+        System.out.print((place+1) + ". Store ID: " + storeID + " Revenue: $");
+        System.out.printf("%.2f", Float.parseFloat(revenue));System.out.println();
         prevRev = revenue;
       }
       while(searchRes.next()){
@@ -1022,7 +1023,8 @@ public static void main(String[] args) throws
           break;
         }
         else{
-          System.out.println(places + ". Store ID: " + storeID + " Revenue: $" + revenue);
+          System.out.print(places + ". Store ID: " + storeID + " Revenue: $");
+          System.out.printf("%.2f", Float.parseFloat(revenue));System.out.println();
         }
       }
     }
@@ -1082,7 +1084,8 @@ public static void main(String[] args) throws
         }
         else
           consec = 1;
-        System.out.println((place+1) + ". Customer ID: " + custID + " Revenue: $" + revenue);
+        System.out.print((place+1) + ". Customer ID: " + custID + " Revenue: $");
+         System.out.printf("%.2f", Float.parseFloat(revenue));System.out.println();
         prevRev = revenue;
       }
       while(searchRes.next()){
@@ -1092,7 +1095,8 @@ public static void main(String[] args) throws
           break;
         }
         else{
-          System.out.println(places + ". Customer ID: " + custID + " Revenue: $" + revenue);
+          System.out.print(places + ". Customer ID: " + custID + " Revenue: $");
+           System.out.printf("%.2f", Float.parseFloat(revenue));System.out.println();
         }
       }
     }
