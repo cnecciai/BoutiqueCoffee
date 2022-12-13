@@ -1,6 +1,6 @@
 /*
 cd C:\Users\clark\OneDrive\Desktop\CS1555\BoutiqueCoffee\Phase III
-javac -cp "postgresql-42.5.0.jar;." BCDriver.java &&
+javac -cp "postgresql-42.5.0.jar;." BCDriver.java
 java -cp "postgresql-42.5.0.jar;." BCDriver
 */
 import java.util.Scanner;
