@@ -19,10 +19,10 @@ public class BCBenchmark {
         String url = "jdbc:postgresql://localhost:5432/";
         Properties props = new Properties();
         props.setProperty("user", "postgres"); //cpn14
-        props.setProperty("password", "Dp3008395"); //BillieBoi - Dp3008395
+        props.setProperty("password", "BillieBoi"); //BillieBoi - Dp3008395
         Connection conn = DriverManager.getConnection(url, props);
         System.out.println("Connection made to: " + conn);
-        System.out.println("\n\n----Beginning Coffee Boutique Driver Program----\n\n");
+        System.out.println("\n\n----Beginning Coffee Boutique Benchmark Program----\n\n");
 
         Scanner cont = new Scanner(System.in);
         System.out.print("Press enter to begin the benchmark...");
@@ -30,104 +30,104 @@ public class BCBenchmark {
         System.out.println("---\n");
 
         //Task #1
-        System.out.println("Benchmarking Task #1...");
+        System.out.println("Press enter to begin benchmarking Task #1...");
         inp = cont.nextLine();
         task_1(conn);
         System.out.println("\n");
 
         //Task #2
-        System.out.println("Benchmarking Task #2...");
+        System.out.println("Press enter to begin benchmarking Task #2...");
         inp = cont.nextLine();
         task_2(conn);
         System.out.println("\n");
 
         //Task #3
-        System.out.println("Benchmarking Task #3...");
+        System.out.println("Press enter to begin benchmarking Task #3...");
         inp = cont.nextLine();
         task_3(conn);
         System.out.println("\n");
 
         //Task #4
-        System.out.println("Benchmarking Task #4...");
+        System.out.println("Press enter to begin benchmarking Task #4...");
         inp = cont.nextLine();
         task_4(conn);
         System.out.println("\n");
 
         //Task #5
-        System.out.print("Benchmarking Task #5...\n");
+        System.out.print("Press enter to begin benchmarking Task #5...\n");
         inp = cont.nextLine();
         task_5(conn);
         System.out.println();
 
         //Task #6
-        System.out.print("Benchmarking Task #6...");
+        System.out.print("Press enter to begin benchmarking Task #6...");
         inp = cont.nextLine();
         task_6(conn);
         System.out.println();
 
         //Task #7
-        System.out.print("Benchmarking Task #7...");
+        System.out.print("Press enter to begin benchmarking Task #7...");
         inp = cont.nextLine();
         task_7(conn);
         System.out.println();
 
 
         //Task #8
-        System.out.print("Benchmarking Task #8...");
+        System.out.print("Press enter to begin benchmarking Task #8...");
         inp = cont.nextLine(); System.out.println("");
         task_8(conn);
         System.out.println();
 
         //Task #9
-        System.out.print("Benchmarking Task #9...");
+        System.out.print("Press enter to begin benchmarking Task #9...");
         inp = cont.nextLine();
         task_9(conn);
         System.out.println();
 
         //Task #12
-        System.out.print("Benchmarking Task #12 (purchase)...");
+        System.out.print("Press enter to begin benchmarking Task #12 (purchase)...");
         inp = cont.nextLine();
         task_12(conn, false);
         System.out.println();
 
         //Task #10 (after sales)
-        System.out.print("Benchmarking Task #10...");
+        System.out.print("Press enter to begin benchmarking Task #10...");
         inp = cont.nextLine();
         task_10(conn);
         System.out.println();
 
         //Task #11 (after sales)
-        System.out.print("Benchmarking Task #11...");
+        System.out.print("Press enter to begin benchmarking Task #11...");
         inp = cont.nextLine();
         task_11(conn);
         System.out.println();
 
         //Task #12
-        System.out.print("Benchmarking Task #12 (redeem)...");
+        System.out.print("Press enter to begin benchmarking Task #12 (redeem)...");
         inp = cont.nextLine();
         task_12(conn, true);
         System.out.println();
 
         //Task #13
-        System.out.print("Benchmarking Task #13...");
+        System.out.print("Press enter to begin benchmarking Task #13...");
         inp = cont.nextLine();
         task_13(conn);
         System.out.println();
 
         //Task #14
-        System.out.print("Benchmarking Task #14...");
+        System.out.print("Press enter to begin benchmarking Task #14...");
         inp = cont.nextLine();
         task_14(conn);
         System.out.println();
 
         //Task #15
-        System.out.print("Benchmarking Task #15...");
+        System.out.print("Press enter to begin benchmarking Task #15...");
         inp = cont.nextLine();
         task_15(conn);
         System.out.println();
 
         //Task #16
-        System.out.print("Benchmarking Task #16...");
+        System.out.print("Press enter to begin benchmarking Task #16...");
         inp = cont.nextLine();
         task_16(conn);
         System.out.println();
@@ -378,7 +378,7 @@ public class BCBenchmark {
                     }
                     if(e1.toString().contains("carries_promotion_id_fkey")){
                         System.out.println("The Promotion id does not exist in the PROMOTION table");
-                    }  
+                    }
                     if(e1.toString().contains("carries_store_id_fkey")){
                         System.out.println("The Store id does not exist in the STORE table");
                     }
