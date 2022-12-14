@@ -10,7 +10,7 @@ Steps to run:
 3. Open your systems command prompt and navigate inside the Phase II folder 
 4. Execute the proper instruction to compile BoutiqueCoffee.java with a compatible jar file. One is included within the folder   
    (example: `javac -cp "postgresql-42.5.0.jar;." BoutiqueCoffee.java`)
-5. Execute: `java -cp "postgresql-42.5.0.jar;." BoutiqueCoffee` to begin prgram execution
+5. Execute: `java -cp "postgresql-42.5.0.jar;." BoutiqueCoffee` to begin program execution
 
 Within terminal/command prompt, you will now be prompted with 17 options, one of which (0) is to exit the program. 
 
@@ -66,7 +66,7 @@ Steps to run:
 3. Open your systems command prompt and navigate inside the Phase III folder 
 4. Execute the proper instruction to compile BoutiqueCoffee.java with a compatible jar file. One is included within the folder   
    (example: `javac -cp "postgresql-42.5.0.jar;." BCDriver.java`)
-5. Execute: `java -cp "postgresql-42.5.0.jar;." BCDriver` to begin prgram execution  
+5. Execute: `java -cp "postgresql-42.5.0.jar;." BCDriver` to begin program execution  
 
 ORDER OF EXECUTION & EXPECTED OUTCOME
 
@@ -139,3 +139,16 @@ The remainder of the BCDriver will execute after task #12.
 ### ***Section III: How to use BCBenchmark.java***
 ---  
 
+The benchmark program runs all tasks multiple times using random data. 
+
+Steps to run:
+1. Clone the repository to your desktop for convenience
+2. Open and run the latest Phase `schema3.sql` and `triggers.sql` files in DataGrip located within the Phase III directory.  
+3. The basic loyalty level must be inserted into the database (This can be done by inserting the data in sample-data.sql).
+4. Open your systems command prompt and navigate inside the Phase III folder 
+5. Execute the proper instruction to compile BoutiqueCoffee.java with a compatible jar file. One is included within the folder   
+   (example: `javac -cp "postgresql-42.5.0.jar;." BCBenchmark.java`)
+6. Execute: `java -cp "postgresql-42.5.0.jar;." BCBenchmark` to begin program execution  
+7. Press Enter after the message for each benchmark test.
+
+The program runs automatically. Some tests will succeed, but some will fail. This is expected, as the data is randomly generated. The program will output error information for the failures.
