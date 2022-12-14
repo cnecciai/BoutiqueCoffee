@@ -29,38 +29,39 @@ public class BCBenchmark {
         String inp = cont.nextLine();
         System.out.println("---\n");
 
-        //Task #1 - Add 2 New store X
+        //Task #1
         System.out.println("Benchmarking Task #1...");
+        inp = cont.nextLine();
         task_1(conn);
         System.out.println("\n");
 
-        //Task #2 - Add 3 new coffee X
+        //Task #2
         System.out.println("Benchmarking Task #2...");
+        inp = cont.nextLine();
         task_2(conn);
         System.out.println("\n");
 
-        //Task #13 - Display Coffee List X
-        System.out.println("Benchmarking Task #13...");
-        task_13(conn);
-        System.out.println("\n");
-
-        //Task #3 - Schedule Promotion for Coffee - X
+        //Task #3
         System.out.println("Benchmarking Task #3...");
+        inp = cont.nextLine();
         task_3(conn);
         System.out.println("\n");
 
-        //Task #4 - Add offer to new store - X
+        //Task #4
         System.out.println("Benchmarking Task #4...");
+        inp = cont.nextLine();
         task_4(conn);
         System.out.println("\n");
 
-        //Task #5 - List all stores with promotions - x
+        //Task #5
         System.out.print("Press enter to begin benchmarking task#5...\n");
+        inp = cont.nextLine();
         task_5(conn);
         System.out.println();
 
-        //Task #6 - Check if store has promotions - both options -
+        //Task #6
         System.out.print("Press enter to begin benchmarking task#6...");
+        inp = cont.nextLine();
         task_6(conn);
         System.out.println();
 
@@ -153,6 +154,7 @@ public class BCBenchmark {
                 conn.setAutoCommit(false);
                 st.executeUpdate(stmt.toString());
                 conn.commit();
+                conn.setAutoCommit(true);
                 System.out.println("ADDED TO DATABASE SUCCESSFULLY - STORE_ID: " + storeID);
             } catch (SQLException e1) {
                 try {
@@ -171,7 +173,7 @@ public class BCBenchmark {
         DecimalFormat df = new DecimalFormat("##.##");
         System.out.println("\n----Adding 100 Coffees----\n");
         for (int i = 0; i < 100; i++) {
-            String name = "ExampleCoffee#" + rand.nextInt(100);
+            String name = "ExampleCoffee#" + i;
             String description = "This is a description.";
             String country = "Country";
             String intensity = String.valueOf(rand.nextInt(11) + 1);
@@ -207,6 +209,7 @@ public class BCBenchmark {
                 conn.setAutoCommit(false);
                 st.executeUpdate(insert.toString());
                 conn.commit();
+                conn.setAutoCommit(true);
                 System.out.println("Added to Database Successfully - CoffeeID: " + coffeeID);
             } catch (SQLException e1) {
                 try {
@@ -239,7 +242,7 @@ public class BCBenchmark {
                     maxID = res1.getInt("ID");
                 }
                 // promotions
-                String promotion_name = "ExamplePromotion#" + rand.nextInt(100);
+                String promotion_name = "ExamplePromotion#" + i;
                 String start_date = startdates[rand.nextInt(startdates.length)];
                 String end_date = enddates[rand.nextInt(enddates.length)];
                 String coffee_id = String.valueOf(rand.nextInt(maxID));
@@ -272,6 +275,7 @@ public class BCBenchmark {
                     st2.executeUpdate(prep_statement.toString());
                     st2.executeUpdate(prep_statement2.toString());
                     conn.commit();
+                    conn.setAutoCommit(true);
                     System.out.println("ADDED TO DATABASE SUCCESSFULLY - PROMOTION_ID: " + promotion_ID);
                 }
                 catch (SQLException e1) {
@@ -331,6 +335,7 @@ public class BCBenchmark {
                 conn.setAutoCommit(false);
                 st.executeUpdate(stmt.toString());
                 conn.commit();
+                conn.setAutoCommit(true);
                 System.out.println("ADDED TO DATABASE SUCCESSFULLY - STORE_ID: " + storeID);
             } catch (SQLException e1) {
                 try {
@@ -465,8 +470,10 @@ public class BCBenchmark {
     //Task #6
     public static void task_6(Connection conn) throws SQLException, ClassNotFoundException {
         Random rand = new Random();
-        System.out.println("\n----Promotional Offers----\n");
-        System.out.println("(1) - List all promotional offers for a store (x20)");
+        System.out.println("\n---- Benchmarking Promotional Offers----\n");
+        System.out.println("(1) - List all promotional offers for a store (x5)");
+        System.out.print("Choice: ");
+
         String store = "";
         String coffee = "";
         String rpromotion_ID = "";
@@ -479,20 +486,21 @@ public class BCBenchmark {
         String choice = "1";
 
         if (choice.equals("1")) {
-            for (int i = 0; i < 5; i++) {
-                int maxstoreID = 0;
-                // get max store id for random generation
-                Statement st2 = conn.createStatement();
-                String query2 = "SELECT MAX(store_ID) AS ID FROM COFFEE_BOUTIQUE.STORE";
-                ResultSet res2 = st2.executeQuery(query2);
-                // get max store id for random generation
-                if (!res2.isBeforeFirst()) {
-                    maxstoreID = 0;
-                } else {
-                    while (res2.next()) {
-                        maxstoreID = res2.getInt("ID");
-                    }
+            int maxstoreID = 0;
+            // get max store id for random generation
+            Statement st2 = conn.createStatement();
+            String query2 = "SELECT MAX(store_ID) AS ID FROM COFFEE_BOUTIQUE.STORE";
+            ResultSet res2 = st2.executeQuery(query2);
+            // get max store id for random generation
+            if (!res2.isBeforeFirst()) {
+                maxstoreID = 0;
+            } else {
+                while (res2.next()) {
+                    maxstoreID = res2.getInt("ID");
                 }
+            }
+
+            for (int i = 0; i < 5; i++) {
                 store = String.valueOf(rand.nextInt(maxstoreID));
                 Statement st = conn.createStatement();
                 PreparedStatement prep_statement = conn.prepareStatement("SELECT * FROM COFFEE_BOUTIQUE.CARRIES NATURAL JOIN COFFEE_BOUTIQUE.PROMOTION WHERE store_ID = ?");
@@ -504,13 +512,13 @@ public class BCBenchmark {
                         System.out.println("No promotions are currently offered at this store");
                     }
                     else {
-                        System.out.println("QUERY SUCCESSFULL for store with id: " + store);
+                        System.out.println("QUERY SUCCESSFULL for store " + store);
                         System.out.println("-----------------");
                         System.out.println("Promotion Name");
                         System.out.println("-----------------------");
                         while (res1.next()) {
                             rpromotion_name = res1.getString("name");
-                            System.out.println(rpromotion_name);
+                            System.out.println( rpromotion_name);
                         }
                     }
                 }
@@ -522,8 +530,11 @@ public class BCBenchmark {
                 }
             }
         } else if (choice.equals("2")) {
-            store = "0";
-            coffee = "0";
+
+            System.out.print("Enter Store ID: ");
+            store = scan.nextLine();
+            System.out.print("Enter Coffee ID: ");
+            coffee = scan.nextLine();
             Statement st = conn.createStatement();
             PreparedStatement prep_statement = conn.prepareStatement(" SELECT * FROM COFFEE_BOUTIQUE.PROMOTES JOIN COFFEE_BOUTIQUE.CARRIES USING(promotion_ID) JOIN COFFEE_BOUTIQUE.PROMOTION USING(promotion_ID) WHERE store_ID = ? and coffee_id = ? ");
             prep_statement.setString(1, store);
@@ -555,92 +566,43 @@ public class BCBenchmark {
             return;
         }
 
-        System.out.println("\n----Promotional Offers----\n");
-        System.out.println("(2) - Offers on a specific coffee at a store (x200)");
-        System.out.print("Choice: ");
-
-        store = "";
-        coffee = "";
-        rpromotion_ID = "";
-        rstore_ID = "";
-        rcoffee = "";
-        rpromotion_name = "";
-
-
-
+        // pt 2
+        System.out.println("(2) - Offers on a specific coffee at a store (x100)");
         choice = "2";
-
         if (choice.equals("1")) {
-            store = "0";
-            Statement st = conn.createStatement();
-            PreparedStatement prep_statement = conn.prepareStatement("SELECT * FROM COFFEE_BOUTIQUE.CARRIES INNER JOIN COFFEE_BOUTIQUE.PROMOTION ON store_ID = ?");
-            prep_statement.setString(1, store);
-
-            try {
-                res1 = st.executeQuery(prep_statement.toString());
-                if (!res1.isBeforeFirst()) {
-                    System.out.println("No promotions are currently offered at this store");
-                    return;
-                }
-                System.out.println("QUERY SUCCESSFULL");
-                System.out.println("-----------------");
-                System.out.println("Promotion Name");
-                System.out.println("-----------------------");
-                while (res1.next()) {
-                    rpromotion_name = res1.getString("name");
-                    System.out.println( rpromotion_name);
-                }
-            }
-            catch (SQLException e1) {
-                while (e1 != null) {
-                    System.out.println("Message = "+ e1.toString());
-                    e1 = e1.getNextException();
+            int maxstoreID = 0;
+            // get max store id for random generation
+            Statement st2 = conn.createStatement();
+            String query2 = "SELECT MAX(store_ID) AS ID FROM COFFEE_BOUTIQUE.STORE";
+            ResultSet res2 = st2.executeQuery(query2);
+            // get max store id for random generation
+            if (!res2.isBeforeFirst()) {
+                maxstoreID = 0;
+            } else {
+                while (res2.next()) {
+                    maxstoreID = res2.getInt("ID");
                 }
             }
 
-        } else if (choice.equals("2")) {
-            for (int i = 0; i < 200; i++) {
-                int maxstoreID = 0;
-                Statement st1 = conn.createStatement();
-                String query1 = "SELECT MAX(coffee_ID) AS ID FROM COFFEE_BOUTIQUE.COFFEE";
-                ResultSet res3 = st1.executeQuery(query1);
-                int maxcoffeeID = 0;
-                // get max coffee id for random generation
-                while (res3.next()){
-                    maxcoffeeID = res3.getInt("ID");
-                }
-                // get max store id for random generation
-                Statement st2 = conn.createStatement();
-                String query2 = "SELECT MAX(store_ID) AS ID FROM COFFEE_BOUTIQUE.STORE";
-                ResultSet res2 = st2.executeQuery(query2);
-                // get max store id for random generation
-                if (!res2.isBeforeFirst()) {
-                    maxstoreID = 0;
-                } else {
-                    while (res2.next()) {
-                        maxstoreID = res2.getInt("ID");
-                    }
-                }
-                coffee = String.valueOf(rand.nextInt(maxcoffeeID));
+            for (int i = 0; i < 5; i++) {
                 store = String.valueOf(rand.nextInt(maxstoreID));
                 Statement st = conn.createStatement();
-                PreparedStatement prep_statement = conn.prepareStatement(" SELECT * FROM COFFEE_BOUTIQUE.PROMOTES JOIN COFFEE_BOUTIQUE.CARRIES USING(promotion_ID) JOIN COFFEE_BOUTIQUE.PROMOTION USING(promotion_ID) WHERE store_ID = ? and coffee_id = ? ");
+                PreparedStatement prep_statement = conn.prepareStatement("SELECT * FROM COFFEE_BOUTIQUE.CARRIES INNER JOIN COFFEE_BOUTIQUE.PROMOTION ON store_ID = ?");
                 prep_statement.setString(1, store);
-                prep_statement.setString(2, coffee);
+
                 try {
                     res1 = st.executeQuery(prep_statement.toString());
                     if (!res1.isBeforeFirst()) {
-                        System.out.println("No promotions for this coffee are currently offered at this store");
+                        System.out.println("No promotions are currently offered at this store");
                     }
                     else {
                         System.out.println("QUERY SUCCESSFULL");
                         System.out.println("-----------------");
-                        System.out.println("Promotion_ID | Promotion Name");
+                        System.out.println("Promotion Name");
                         System.out.println("-----------------------");
                         while (res1.next()) {
-                            rpromotion_ID = res1.getString("promotion_ID");
                             rpromotion_name = res1.getString("name");
-                            System.out.println("           "+ rpromotion_ID + " | " + rpromotion_name);
+                            System.out.println( rpromotion_name);
                         }
                     }
                 }
@@ -650,6 +612,64 @@ public class BCBenchmark {
                         e1 = e1.getNextException();
                     }
                 }
+            }
+        } else if (choice.equals("2")) {
+            int maxstoreID = 0;
+            int maxcoffeeID = 0;
+            // get max store id for random generation
+            Statement st2 = conn.createStatement();
+            String query2 = "SELECT MAX(store_ID) AS ID FROM COFFEE_BOUTIQUE.STORE";
+            ResultSet res2 = st2.executeQuery(query2);
+            // get max store id for random generation
+            if (!res2.isBeforeFirst()) {
+                maxstoreID = 0;
+            } else {
+                while (res2.next()) {
+                    maxstoreID = res2.getInt("ID");
+                }
+            }
+            // get max coffee id for random generation
+            Statement st3 = conn.createStatement();
+            String query3 = "SELECT MAX(coffee_ID) AS ID FROM COFFEE_BOUTIQUE.COFFEE";
+            ResultSet res3 = st3.executeQuery(query2);
+            // get max coffee id for random generation
+            if (!res3.isBeforeFirst()) {
+                maxcoffeeID = 0;
+            } else {
+                while (res3.next()) {
+                    maxcoffeeID = res3.getInt("ID");
+                }
+            }
+            for (int i = 0; i < 100; i++) {
+                store = String.valueOf(rand.nextInt(maxstoreID));
+                coffee = String.valueOf(rand.nextInt(maxcoffeeID));
+            Statement st = conn.createStatement();
+            PreparedStatement prep_statement = conn.prepareStatement(" SELECT * FROM COFFEE_BOUTIQUE.PROMOTES JOIN COFFEE_BOUTIQUE.CARRIES USING(promotion_ID) JOIN COFFEE_BOUTIQUE.PROMOTION USING(promotion_ID) WHERE store_ID = ? and coffee_id = ? ");
+            prep_statement.setString(1, store);
+            prep_statement.setString(2, coffee);
+            try {
+                res1 = st.executeQuery(prep_statement.toString());
+                if (!res1.isBeforeFirst()) {
+                    System.out.println("No promotions for this coffee are currently offered at this store");
+                }
+                else {
+                    System.out.println("QUERY SUCCESSFULL for " + store);
+                    System.out.println("-----------------");
+                    System.out.println("Promotion_ID | Promotion Name");
+                    System.out.println("-----------------------");
+                    while (res1.next()) {
+                        rpromotion_ID = res1.getString("promotion_ID");
+                        rpromotion_name = res1.getString("name");
+                        System.out.println("           " + rpromotion_ID + " | " + rpromotion_name);
+                    }
+                }
+            }
+            catch (SQLException e1) {
+                while (e1 != null) {
+                    System.out.println("Message = "+ e1.toString());
+                    e1 = e1.getNextException();
+                }
+            }
             }
         } else /*error*/ {
             System.out.println("ERROR: CHOOSE EITHER 1 OR 2");
