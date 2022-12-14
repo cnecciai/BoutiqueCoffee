@@ -19,7 +19,7 @@ public class BCBenchmark {
         String url = "jdbc:postgresql://localhost:5432/";
         Properties props = new Properties();
         props.setProperty("user", "postgres"); //cpn14
-        props.setProperty("password", "BillieBoi"); //BillieBoi - Dp3008395
+        props.setProperty("password", "Dp3008395"); //BillieBoi - Dp3008395
         Connection conn = DriverManager.getConnection(url, props);
         System.out.println("Connection made to: " + conn);
         System.out.println("\n\n----Beginning Coffee Boutique Driver Program----\n\n");
@@ -67,6 +67,7 @@ public class BCBenchmark {
 
         //Task #7
         System.out.print("Benchmarking Task #7...");
+        inp = cont.nextLine();
         task_7(conn);
         System.out.println();
 
@@ -175,6 +176,9 @@ public class BCBenchmark {
             } catch (SQLException e1) {
                 try {
                     System.out.println("ERROR: STORE NOT ADDED TO DATABASE");
+                    if(e1.toString().contains("store_name_key")){
+                        System.out.println("Store name \"" + name + "\" already exists");
+                    }
                     conn.rollback();
                 }
                 catch(SQLException e2) { System.out.println(e2.toString()); }
@@ -196,11 +200,11 @@ public class BCBenchmark {
             String intensity = String.valueOf(rand.nextInt(11) + 1);
             double dprice = rand.nextDouble() * 30;
             String price = df.format(dprice);
-            System.out.print("p:" + price + "|");
+            //System.out.print("p:" + price + "|");
             String rewardPoints = df.format(Double.parseDouble(price) * 10);
-            System.out.print("rewp:" + rewardPoints + "|");
+            //System.out.print("rewp:" + rewardPoints + "|");
             String redeemPoints = df.format(Double.parseDouble(price) * 100);
-            System.out.print("redp:" + redeemPoints + "\n");
+            //System.out.print("redp:" + redeemPoints + "\n");
             //Processing Queries
             try {
                 //Getting Coffee ID
@@ -236,6 +240,12 @@ public class BCBenchmark {
                 try {
                     System.out.println(e1.toString());
                     System.out.println("ERROR: COFFEE NOT ADDED TO DATABASE");
+                    if(e1.toString().contains("10x")){
+                        System.out.println(rewardPoints + " is not 10x " + price);
+                    }
+                    if(e1.toString().contains("100x")){
+                        System.out.println(redeemPoints + " is not 100x " + price);
+                    }
                     conn.rollback();
                 } catch (SQLException e2) {
                     System.out.println(e2.toString());
@@ -302,7 +312,9 @@ public class BCBenchmark {
                 catch (SQLException e1) {
                     try {
                         System.out.println("ERROR: PROMOTION NOT ADDED TO DATABASE");
-                        System.out.println(e1);
+                        if(e1.toString().contains("promotion_check")){
+                            System.out.println("Start Date " + start_date + " is after the End Date " + end_date);
+                        }
                         conn.rollback();
                     }
                     catch(SQLException e2) { System.out.println(e2.toString()); }
@@ -361,7 +373,15 @@ public class BCBenchmark {
             } catch (SQLException e1) {
                 try {
                     System.out.println("ERROR: PROMOTION NOT ADDED TO STORE");
-                    System.out.println(e1);
+                    if(e1.toString().contains("pk_carries")){
+                        System.out.println("The Promotion id and Store id combination already exists");
+                    }
+                    if(e1.toString().contains("carries_promotion_id_fkey")){
+                        System.out.println("The Promotion id does not exist in the PROMOTION table");
+                    }  
+                    if(e1.toString().contains("carries_store_id_fkey")){
+                        System.out.println("The Store id does not exist in the STORE table");
+                    }
                     conn.rollback();
                 }
                 catch(SQLException e2) { System.out.println(e2.toString()); }
@@ -890,11 +910,12 @@ public class BCBenchmark {
 
     //Task #8
     public static void task_8(Connection conn) {
+        Random rand = new Random();
         //Collecting User Input
         Scanner scan = new Scanner(System.in);
         System.out.println("\n----Adding/Changing Loyalty Level (x10)----");
         for (int i = 0; i < 10; i++) {
-            String levelName = "loyalty#" + i;
+            String levelName = "loyalty#" + rand.nextInt(10);
             String boostFactor = "" + i;
             try{
                 //Getting List of Level Names
@@ -917,6 +938,7 @@ public class BCBenchmark {
                     PreparedStatement prep_statement = conn.prepareStatement("UPDATE COFFEE_BOUTIQUE.LOYALTY_PROGRAM SET booster_factor = ? WHERE level_ID = ?");
                     prep_statement.setString(1, boostFactor);
                     prep_statement.setString(2, levelID);
+                    System.out.println("ID: " + levelID + " Name: " + levelName + " Booster Factor " + boostFactor);
                     st2.executeUpdate(prep_statement.toString());
                 }
                 else{
@@ -937,6 +959,7 @@ public class BCBenchmark {
                     prep_statement.setString(1, levelID);
                     prep_statement.setString(2, levelName);
                     prep_statement.setString(3, boostFactor);
+                    System.out.println("ID: " + levelID + " Name: " + levelName + " Booster Factor " + boostFactor);
                     st3.executeUpdate(prep_statement.toString());
                 }
             }
@@ -1038,7 +1061,7 @@ public class BCBenchmark {
                 else {
                     result.next();
                     float loyaltyPoints = result.getFloat("points_earned");
-                    System.out.println(loyaltyPoints + " points");
+                    System.out.println("Customer ID: " + customerID + "Loyalty Points: " + loyaltyPoints + " points");
                 }
             } catch (SQLException e1) { System.out.println("ERROR: COULD NOT FETCH LOYALTY POINTS"); }
         }
@@ -1271,6 +1294,7 @@ public class BCBenchmark {
                     st_sale.executeUpdate(query_arr[fin].toString());
                 }
                 conn.commit();
+                conn.setAutoCommit(true);
                 for (int sub = 0; sub < numberOfTypes; sub++) {
                     System.out.println("New Sale Added Successfully with Sale ID: " + sale_ids[sub]);
                 }
@@ -1278,9 +1302,14 @@ public class BCBenchmark {
             catch (SQLException e1) {
                 conn.rollback();
                 System.out.println("Error: Rollback Initiated");
-                while (e1 != null) {
-                    System.out.println(e1.toString());
-                    e1 = e1.getNextException();
+                if(e1.toString().contains("sale_customer_id_fkey")){
+                    System.out.println("Customer id " + customer + " doesn't exist in the STORE table");
+                }
+                if(e1.toString().contains("sale_store_id_fkey")){
+                    System.out.println("Store id " + store + " doesn't exist in the STORE table");
+                }
+                if(e1.toString().contains("sale_coffee_id_fkey")){
+                    System.out.println("Coffee id doesn't exist in the STORE table");
                 }
             }
         }
