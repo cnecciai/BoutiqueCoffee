@@ -88,6 +88,6 @@ For the second **Brian** purchase, redeem points will be successfully added, as 
 
 The remainder of the BCDriver will execute after task #12.
 
-### ***Section III: How to use BoutiqueCoffee.java***
+### ***Section III: How to use BCBenchmark.java***
 ---  
 
