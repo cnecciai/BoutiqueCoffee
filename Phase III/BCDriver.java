@@ -310,7 +310,7 @@ public static void main(String[] args) throws
       conn.setAutoCommit(false);
       st_3.executeUpdate(insert_3.toString());
       conn.commit();
-      System.out.println("Added to Database Successfully - CoffeID: " + coffeeID_3);
+      System.out.println("Added to Database Successfully - CoffeeID: " + coffeeID_3);
     }
     catch (SQLException e1){
       try {

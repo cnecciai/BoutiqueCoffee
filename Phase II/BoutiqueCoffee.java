@@ -167,7 +167,7 @@ public static void main(String[] args) throws
       conn.setAutoCommit(false);
       st.executeUpdate(insert.toString());
       conn.commit();
-      System.out.println("Added to Database Successfully - CoffeID: " + coffeeID);
+      System.out.println("Added to Database Successfully - CoffeeID: " + coffeeID);
     }
     catch (SQLException e1){
       try {
