@@ -62,7 +62,7 @@ Task #16 - (Highest spending customers) Sub-options will be provided upon execut
 
 Steps to run: 
 1. Clone the repository to your desktop for convenience
-2. Open and run the latest Phase `schema2.sql` and `triggers.sql` files in DataGrip located within the Phase II directory.  
+2. Open and run the latest Phase `schema3.sql` and `triggers.sql` files in DataGrip located within the Phase III directory.  
 3. Open your systems command prompt and navigate inside the Phase III folder 
 4. Execute the proper instruction to compile BoutiqueCoffee.java with a compatible jar file. One is included within the folder   
    (example: `javac -cp "postgresql-42.5.0.jar;." BCDriver.java`)
