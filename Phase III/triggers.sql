@@ -33,11 +33,11 @@ CREATE TRIGGER sale_amount_trigger
 CREATE OR REPLACE FUNCTION customer_add_coffee_assign()
 RETURNS TRIGGER AS $$
     BEGIN
-        IF NEW.price <> round((NEW.reward_points / 10),2) THEN
+        IF NEW.price <> round((NEW.reward_points / 10)::numeric,2) THEN
         RAISE EXCEPTION 'Reward Points must be 10x the price of coffee';
         end if;
 
-        IF NEW.price <> round((NEW.redeem_points / 100),2) THEN
+        IF NEW.price <> round((NEW.redeem_points / 100)::numeric,2) THEN
         RAISE EXCEPTION 'Redeem Points must be 100x the price of coffee';
         end if;
         RETURN NEW;

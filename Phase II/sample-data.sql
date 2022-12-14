@@ -56,8 +56,6 @@ INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (9, 'Flat White', 'Blend of micro-foam
 INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (10, 'Skinny Peppermint Mocha', 'Basic Coffee', 'Australia', 10, 7.15, 71.5, 715);
 INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (11, 'Pumpkin Spice Latte', 'Voted #1 by all women', 'Japan', 11, 7.30, 73.0, 730);
 INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (12, 'Toasted Graham Latte', 'Graham cracker goodness', 'Peru', 12, 7.95, 79.5, 795);
-INSERT INTO COFFEE_BOUTIQUE.COFFEE VALUES (13, 'Toasted Graham Latte 2', 'Graham cracker goodness 2', 'Peru 2', 12, 7.61, 76.1, 761);
-
 
 -------------------3 PROMOTIONS-------------------
 INSERT INTO COFFEE_BOUTIQUE.PROMOTION VALUES (1, 'Grand Opening', '10-15-2022', '11-15-2022');
