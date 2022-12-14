@@ -54,64 +54,74 @@ public class BCBenchmark {
         System.out.println("\n");
 
         //Task #5
-        System.out.print("Press enter to begin benchmarking task#5...\n");
+        System.out.print("Benchmarking Task #5...\n");
         inp = cont.nextLine();
         task_5(conn);
         System.out.println();
 
         //Task #6
-        System.out.print("Press enter to begin benchmarking task#6...");
+        System.out.print("Benchmarking Task #6...");
         inp = cont.nextLine();
         task_6(conn);
         System.out.println();
 
-        //Task#7
-        //Task #7 - Check for closest store -
-        System.out.print("Press enter to begin benchmarking task#7...");
+        //Task #7
+        System.out.print("Benchmarking Task #7...");
         task_7(conn);
         System.out.println();
 
 
-        //Task #8 - Add/Set Loyalty Level - then update it
-        //Task #8 - Update Loyalty Level - then update it
-        System.out.print("Press enter to begin benchmarking task#8...");
+        //Task #8
+        System.out.print("Benchmarking Task #8...");
         inp = cont.nextLine(); System.out.println("");
         task_8(conn);
         System.out.println();
 
-        //Task #9 - Add 2 new customer
+        //Task #9
         System.out.print("Benchmarking Task #9...");
+        inp = cont.nextLine();
         task_9(conn);
         System.out.println();
 
-        //Task #10 - Show Loyalty Points of customer
-        System.out.print("Press enter to begin testing task#10...");
+        //Task #10
+        System.out.print("Benchmarking Task #10...");
+        inp = cont.nextLine();
         task_10(conn);
         System.out.println();
 
-        //Task #11 - Produce List of loyal customers
+        //Task #11
         System.out.print("Benchmarking Task #11...");
+        inp = cont.nextLine();
         task_11(conn);
         System.out.println();
 
-        //Task #12 - Add purchase for 2 customer - 45 days from today
-        System.out.print("Press enter to begin testing task#12...");
+        //Task #12
+        System.out.print("Benchmarking Task #12...");
         inp = cont.nextLine();
         task_12(conn);
         System.out.println();
 
-        //Task #14 - List coffee with specified coffee name keywords
+        //Task #13
         System.out.print("Benchmarking Task #14...");
+        inp = cont.nextLine();
         task_14(conn);
         System.out.println();
 
-        //Task #15 - List IDS of top stores with revenus for X months
+        //Task #14
+        System.out.print("Benchmarking Task #14...");
+        inp = cont.nextLine();
+        task_14(conn);
+        System.out.println();
+
+        //Task #15
         System.out.print("Benchmarking Task #15...");
+        inp = cont.nextLine();
         task_15(conn);
         System.out.println();
 
-        //Task #16 List IDs of top K customer shavnig spent most money
+        //Task #16
         System.out.print("Benchmarking Task #16...");
+        inp = cont.nextLine();
         task_16(conn);
         System.out.println();
     }
@@ -678,23 +688,350 @@ public class BCBenchmark {
     };
 
     //Task #7
-    public static void task_7(Connection conn) {
+    public static void task_7(Connection conn) throws SQLException, ClassNotFoundException {
+        Random rand = new Random();
+        Scanner scan = new Scanner(System.in);
+        System.out.println("\n----Benchmarking Closest Stores----\n");
+        System.out.println("(1) - Find any closest store (x20)");
+        String choice = "1";
 
+        // any closest store
+        if (choice.equals("1")) {
+            for (int i = 0; i < 20; i++) {
+                // get user input
+                float gpsLongNum = rand.nextFloat() * 360 - 180;
+                float gpsLatNum = rand.nextFloat() * 180 - 90;
+                String gpsLong = String.valueOf(gpsLongNum);
+                String gpsLat = String.valueOf(gpsLatNum);
+                // get stores sorted by distance
+                try {
+                    Statement st = conn.createStatement();
+                    PreparedStatement stmt = conn.prepareStatement(" SELECT name, SQRT((gps_lat - ?)^2 + (gps_long - ?)^2) AS distance FROM COFFEE_BOUTIQUE.STORE ORDER BY distance");
+                    stmt.setString(1, gpsLat);
+                    stmt.setString(2, gpsLong);
+                    ResultSet result = st.executeQuery(stmt.toString());
+                    // print the closest store.
+                    System.out.println("---------------------------------------------");
+                    if (!result.isBeforeFirst()) {
+                        System.out.println("No stores to list.");
+                    }
+                    else {
+                        result.next();
+                        System.out.println("Closest Store: " + result.getString("name"));
+                        // if there is a tie, print all stores that are tied.
+                        float minDist = result.getFloat("distance");
+                        float eps = 0.0000001f;
+                        while(result.next() && Math.abs(result.getFloat("distance") - minDist) < eps) {
+                            System.out.println("Closest Store: " + result.getString("name"));
+                        }
+                    }
+                } catch (SQLException e1) {
+                    while (e1 != null) {
+                        System.out.println("Message = "+ e1.toString());
+                        e1 = e1.getNextException();
+                    }
+                }
+            }
+        }
+        // closest store with promotion
+        else if (choice.equals("2")) {
+            // get user input
+            System.out.print("Enter GPS latitude: ");
+            String gpsLat = scan.nextLine();
+            System.out.print("Enter GPS longitude: ");
+            String gpsLong = scan.nextLine();
+            System.out.print("Enter promotion ID: ");
+            String promotionID = scan.nextLine();
+            // get stores sorted by distance
+            try {
+                Statement st = conn.createStatement();
+                PreparedStatement stmt = conn.prepareStatement(" SELECT COFFEE_BOUTIQUE.STORE.name, SQRT((gps_lat - ?)^2 + (gps_long - ?)^2) AS distance FROM COFFEE_BOUTIQUE.CARRIES NATURAL JOIN COFFEE_BOUTIQUE.STORE WHERE promotion_id = ? ORDER BY distance");
+                stmt.setString(1, gpsLat);
+                stmt.setString(2, gpsLong);
+                stmt.setString(3, promotionID);
+                ResultSet result = st.executeQuery(stmt.toString());
+                // print the closest store.
+                System.out.println("---------------------------------------------");
+                if (!result.isBeforeFirst()) {
+                    System.out.println("No stores to list.");
+                    return;
+                }
+
+                result.next();
+                System.out.println("Closest Store: " + result.getString("name"));
+                // if there is a tie, print all stores that are tied.
+                float minDist = result.getFloat("distance");
+                float eps = 0.0000001f;
+                while(result.next() && Math.abs(result.getFloat("distance") - minDist) < eps) {
+                    System.out.println("Closest Store: " + result.getString("name"));
+                }
+            } catch (SQLException e1) {
+                while (e1 != null) {
+                    System.out.println("Message = "+ e1.toString());
+                    e1 = e1.getNextException();
+                }
+            }
+        }
+        else {
+            System.out.println("ERROR: CHOOSE EITHER 1 OR 2");
+            return;
+        }
+
+        // pt 2
+        System.out.println("(2) - Find closest store with specific promotion (x20)");
+
+        choice = "2";
+        // any closest store
+        if (choice.equals("1")) {
+            for (int i = 0; i < 20; i++) {
+                // get user input
+                float gpsLongNum = rand.nextFloat() * 360 - 180;
+                float gpsLatNum = rand.nextFloat() * 180 - 90;
+                String gpsLong = String.valueOf(gpsLongNum);
+                String gpsLat = String.valueOf(gpsLatNum);
+                // get stores sorted by distance
+                try {
+                    Statement st = conn.createStatement();
+                    PreparedStatement stmt = conn.prepareStatement(" SELECT name, SQRT((gps_lat - ?)^2 + (gps_long - ?)^2) AS distance FROM COFFEE_BOUTIQUE.STORE ORDER BY distance");
+                    stmt.setString(1, gpsLat);
+                    stmt.setString(2, gpsLong);
+                    ResultSet result = st.executeQuery(stmt.toString());
+                    // print the closest store.
+                    System.out.println("---------------------------------------------");
+                    if (!result.isBeforeFirst()) {
+                        System.out.println("No stores to list.");
+                        return;
+                    }
+                    result.next();
+                    System.out.println("Closest Store: " + result.getString("name"));
+                    // if there is a tie, print all stores that are tied.
+                    float minDist = result.getFloat("distance");
+                    float eps = 0.0000001f;
+                    while(result.next() && Math.abs(result.getFloat("distance") - minDist) < eps) {
+                        System.out.println("Closest Store: " + result.getString("name"));
+                    }
+                } catch (SQLException e1) {
+                    while (e1 != null) {
+                        System.out.println("Message = "+ e1.toString());
+                        e1 = e1.getNextException();
+                    }
+                }
+            }
+        }
+        // closest store with promotion
+        else if (choice.equals("2")) {
+            for (int i = 0; i < 20; i++) {
+                int maxpromotionID = 0;
+                // get user input
+                float gpsLongNum = rand.nextFloat() * 360 - 180;
+                float gpsLatNum = rand.nextFloat() * 180 - 90;
+                String gpsLong = String.valueOf(gpsLongNum);
+                String gpsLat = String.valueOf(gpsLatNum);
+                // get max promotion id for random generation
+                Statement st1 = conn.createStatement();
+                String query1 = "SELECT MAX(promotion_ID) AS ID FROM COFFEE_BOUTIQUE.PROMOTION";
+                ResultSet res1 = st1.executeQuery(query1);
+                // get max promotion id for random generation
+                if (!res1.isBeforeFirst()) {
+                    maxpromotionID = 0;
+                } else {
+                    while (res1.next()) {
+                        maxpromotionID = res1.getInt("ID");
+                    }
+                }
+                String promotionID = String.valueOf(rand.nextInt(maxpromotionID));
+                // get stores sorted by distance
+                try {
+                    Statement st = conn.createStatement();
+                    PreparedStatement stmt = conn.prepareStatement(" SELECT COFFEE_BOUTIQUE.STORE.name, SQRT((gps_lat - ?)^2 + (gps_long - ?)^2) AS distance FROM COFFEE_BOUTIQUE.CARRIES NATURAL JOIN COFFEE_BOUTIQUE.STORE WHERE promotion_id = ? ORDER BY distance");
+                    stmt.setString(1, gpsLat);
+                    stmt.setString(2, gpsLong);
+                    stmt.setString(3, promotionID);
+                    ResultSet result = st.executeQuery(stmt.toString());
+                    // print the closest store.
+                    System.out.println("---------------------------------------------");
+                    if (!result.isBeforeFirst()) {
+                        System.out.println("No stores to list.");
+                    }
+                    else {
+                        result.next();
+                        System.out.println("Closest Store: " + result.getString("name"));
+                        // if there is a tie, print all stores that are tied.
+                        float minDist = result.getFloat("distance");
+                        float eps = 0.0000001f;
+                        while(result.next() && Math.abs(result.getFloat("distance") - minDist) < eps) {
+                            System.out.println("Closest Store: " + result.getString("name"));
+                        }
+                    }
+                } catch (SQLException e1) {
+                    while (e1 != null) {
+                        System.out.println("Message = "+ e1.toString());
+                        e1 = e1.getNextException();
+                    }
+                }
+            }
+        }
+        else {
+            System.out.println("ERROR: CHOOSE EITHER 1 OR 2");
+            return;
+        }
     };
 
     //Task #8
     public static void task_8(Connection conn) {
+        //Collecting User Input
+        Scanner scan = new Scanner(System.in);
+        System.out.println("\n----Adding/Changing Loyalty Level (x10)----");
+        for (int i = 0; i < 10; i++) {
+            String levelName = "loyalty#" + i;
+            String boostFactor = "" + i;
+            try{
+                //Getting List of Level Names
+                Statement st = conn.createStatement();
+                String searchQuery = "SELECT level_ID, level_name FROM COFFEE_BOUTIQUE.LOYALTY_PROGRAM";
+                ResultSet searchRes = st.executeQuery(searchQuery);
+                //Checking if Given Level Name Exists
+                boolean levelExists = false;
+                String levelID = "";
+                while(searchRes.next()){
+                    if (levelName.equals(searchRes.getString("level_name"))){
+                        levelExists = true;
+                        levelID = searchRes.getString("level_ID");
+                    }
+                }
+                if(levelExists){
+                    System.out.println("----Updating Booster Factor----");
 
+                    Statement st2 = conn.createStatement();
+                    PreparedStatement prep_statement = conn.prepareStatement("UPDATE COFFEE_BOUTIQUE.LOYALTY_PROGRAM SET booster_factor = ? WHERE level_ID = ?");
+                    prep_statement.setString(1, boostFactor);
+                    prep_statement.setString(2, levelID);
+                    st2.executeUpdate(prep_statement.toString());
+                }
+                else{
+                    System.out.println("----Adding Loyalty Level----");
+
+                    Statement st2 = conn.createStatement();
+                    String maxIDQuery = "SELECT MAX(level_ID) + 1 AS ID FROM COFFEE_BOUTIQUE.LOYALTY_PROGRAM";
+                    ResultSet maxID = st.executeQuery(maxIDQuery);
+                    levelID = "";
+                    while(maxID.next()){
+                        levelID = maxID.getString("ID");
+                        if (levelID == null) {
+                            levelID = "0";
+                        }
+                    }
+                    Statement st3 = conn.createStatement();
+                    PreparedStatement prep_statement = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.LOYALTY_PROGRAM VALUES (?,?,?)");
+                    prep_statement.setString(1, levelID);
+                    prep_statement.setString(2, levelName);
+                    prep_statement.setString(3, boostFactor);
+                    st3.executeUpdate(prep_statement.toString());
+                }
+            }
+            catch (SQLException e1){
+                System.out.println(e1.toString());
+            }
+        }
     };
 
     //Task #9
     public static void task_9(Connection conn) throws SQLException, ClassNotFoundException {
+        Random rand = new Random();
+        Scanner scan = new Scanner(System.in);
+        System.out.println("\n----Add a new Customer (x100)----\n");
+        for (int i = 0; i < 100; i++) {
+            String first_name = "John#" + i;
+            String last_name = "Doe";
+            String middle_inital = "G";
+            String day_of_birth = "10";
+            String month_of_birth = "OCT";
+            String phone_number = "9876543210";
+            String phone_type = "work";
+            Statement st = conn.createStatement();
+            String query1 = "SELECT MAX(customer_ID) + 1 AS ID FROM COFFEE_BOUTIQUE.CUSTOMER";
 
+            int customer_ID = 0;
+            ResultSet res1;
+            try {
+                res1 = st.executeQuery(query1);
+                if (!res1.isBeforeFirst()) {
+                    customer_ID = 0;
+                } else {
+                    while (res1.next()) {
+                        customer_ID = res1.getInt("ID");
+                    }
+                }
+            } catch (SQLException e1) {
+                while (e1 != null) {
+                    System.out.println("Message = "+ e1.toString());
+                    e1 = e1.getNextException();
+                }
+            }
+
+            Statement st2 = conn.createStatement();
+            PreparedStatement prep_statement = conn.prepareStatement("INSERT INTO COFFEE_BOUTIQUE.CUSTOMER VALUES (?,?,?,?,?,?,?,?,?,?)");
+            prep_statement.setString(1, String.valueOf(customer_ID));
+            prep_statement.setString(2, first_name);
+            prep_statement.setString(3, last_name);
+            prep_statement.setString(4, middle_inital);
+            prep_statement.setString(5, day_of_birth);
+            prep_statement.setString(6, month_of_birth);
+            prep_statement.setString(7, phone_number);
+            prep_statement.setString(8, phone_type);
+            prep_statement.setString(9, "0");
+            prep_statement.setString(10, "0");
+
+            try {
+                st2.executeUpdate(prep_statement.toString());
+                System.out.println("New Customer ID: " + customer_ID);
+            }
+            catch (SQLException e1) {
+                while (e1 != null) {
+                    System.out.println(e1.toString());
+                    e1 = e1.getNextException();
+                }
+            }
+        }
     };
 
     //Task #10
-    public static void task_10(Connection conn) {
-
+    public static void task_10(Connection conn) throws SQLException, ClassNotFoundException{
+        Random rand = new Random();
+        System.out.println("\n----Displaying Loyalty Points (x100) ----\n");
+        for (int i = 0; i < 100; i++) {
+            // get user input
+            int maxcustomerID = 0;
+            // get max promotion id for random generation
+            Statement st1 = conn.createStatement();
+            String query1 = "SELECT MAX(customer_ID) AS ID FROM COFFEE_BOUTIQUE.CUSTOMER";
+            ResultSet res1 = st1.executeQuery(query1);
+            // get max promotion id for random generation
+            if (!res1.isBeforeFirst()) {
+                maxcustomerID = 0;
+            } else {
+                while (res1.next()) {
+                    maxcustomerID = res1.getInt("ID");
+                }
+            }
+            String customerID = String.valueOf(rand.nextInt(maxcustomerID));
+            try {
+                // prepare statement
+                Statement st = conn.createStatement();
+                PreparedStatement stmt = conn.prepareStatement("SELECT points_earned FROM COFFEE_BOUTIQUE.CUSTOMER WHERE customer_ID = ?");
+                stmt.setString(1, customerID);
+                // get loyalty points
+                ResultSet result = st.executeQuery(stmt.toString());
+                if (!result.isBeforeFirst()) {
+                    System.out.println("No customer exists with that ID.");
+                }
+                else {
+                    result.next();
+                    float loyaltyPoints = result.getFloat("points_earned");
+                    System.out.println(loyaltyPoints + " points");
+                }
+            } catch (SQLException e1) { System.out.println("ERROR: COULD NOT FETCH LOYALTY POINTS"); }
+        }
     };
 
     //Task #11
